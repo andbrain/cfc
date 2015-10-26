@@ -5,6 +5,7 @@ Parser::Parser(string dataset_path)
 	cout << "..Starting parsing" << endl;
 	this->base_path = dataset_path + "cf";
 	this->hash = new unordered_map<string,Word *>();
+	this->documents = new vector<Document *>();
 	InitializeMapTag();
 }
 
@@ -71,7 +72,13 @@ int Parser::ReadDocument()
 		aux_tag = ConvertStringToTag(str_tag);
 
 		if(aux_tag != NIL)
+		{
+			
 			SwitchField(aux_tag, line.substr(2)); //get line withou tag
+		}
+		else
+			cout << "Read line" << endl;
+
 	}
 
 	return 0;
@@ -81,17 +88,17 @@ void Parser::SwitchField(Tag aux_tag, string line)
 {
 	switch(aux_tag)
 	{
-		case PN:
-			cout << "PN: " << line << endl;
-		break;
-		case AU:
-
+		case RN:
+			current_tag = RN;
+			field = line;
 		break;
 		case TI:
-
+			current_tag = TI;
+			field = line;
 		break;
 		case AB:
-
+			current_tag = AB;
+			field = line;
 		break;
 	}
 }

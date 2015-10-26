@@ -3,9 +3,10 @@
 
 #include <iostream>
 #include <unordered_map>
-#include <map>
+#include <vector>
 #include <fstream>
 #include <string>
+#include "document.h"
 #include "util.h"
 
 using namespace std;
@@ -16,10 +17,12 @@ class Parser
 {
 
 private:
-	string base_path; //path without id file
+	string base_path, field; //path without id file
 	fstream fs;
+	Tag current_tag;
 	unordered_map <string,Tag> tag;
 	unordered_map <string, Word *> *hash; //hash map of words
+	vector<Document *> *documents;
 
 	int ReadCollection(int doc);
 	int ReadDocument();

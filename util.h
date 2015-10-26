@@ -5,18 +5,18 @@
 
 using namespace std;
 
-struct Document
+struct Doc
 {
 	int id;
 	int frequence;
-	Document *next;
+	Doc *next;
 };
 
 struct Word
 {
 	string content;
 	Word *next;
-	Document *document;
+	Doc *doc;
 };
 
 
