@@ -10,32 +10,32 @@ Document::~Document()
 
 }
 
-string GetRN()
+string Document::GetRN()
 {
 	return record_number;
 }
 
-string GetTI()
+string Document::GetTI()
 {
 	return title;
 }
 
-string GetAB()
+string Document::GetAB()
 {
 	return abstract;
 }
 
-void SetRN(string rn)
+void Document::SetRN(string rn)
 {
 	record_number = rn;
 }
 
-void SetTI(string ti)
+void Document::SetTI(string ti)
 {
 	title = ti;
 }
 
-void SetAB(string ab)
+void Document::SetAB(string ab)
 {
 	abstract = ab;
 }

@@ -11,6 +11,11 @@ Parser::Parser(string dataset_path)
 
 Parser::~Parser()
 {
+	vector<Document *>::iterator it = documents->begin();
+
+	for(it; it!= documents->end(); ++it)
+		delete (*it);
+
 	delete hash;
 	cout << "..Finishing parsing" << endl;
 }
@@ -47,6 +52,17 @@ int Parser::Process()
 		ReadCollection(i);
 	}
 
+	vector<Document *>::iterator it = documents->begin();
+
+	for(it; it!= documents->end(); ++it)
+	{
+		cout << "************************" << endl;
+		cout << "RN: " << (*it)->GetRN() << endl;
+		cout << "TI: " << (*it)->GetTI() << endl;
+		cout << "AB: " << (*it)->GetAB() << endl;
+		cout << "************************" << endl;
+	}	
+
 	return 0;
 }
 
@@ -61,49 +77,74 @@ int Parser::ReadCollection(int doc)
 	return 0;
 }
 
+
 int Parser::ReadDocument()
-{
-	string str_tag, line;
-	Tag aux_tag;
+{	
+	string result_str;
+	Document *document;
 
-	while(getline(fs, line))
+	while(!fs.eof())
 	{
-		str_tag = line.substr(0,2);
-		aux_tag = ConvertStringToTag(str_tag);
-
-		if(aux_tag != NIL)
+		result_str = ReadField(RN);
+		if(result_str != "")
 		{
-			
-			SwitchField(aux_tag, line.substr(2)); //get line withou tag
+			document = new Document();
+			document->SetRN(result_str);
+			result_str = ReadField(TI);
+			document->SetTI(result_str);
+			result_str = ReadField(AB);
+			document->SetAB(result_str);
+			documents->push_back(document);
 		}
-		else
-			cout << "Read line" << endl;
-
 	}
 
 	return 0;
 }
 
-void Parser::SwitchField(Tag aux_tag, string line)
+string Parser::ReadField(Tag tag_field)
 {
-	switch(aux_tag)
+	string line, str_tag;
+	Tag aux_tag = tag_field;
+
+	do{
+		getline(fs,line);
+		str_tag = line.substr(0,2);
+		aux_tag = ConvertStringToTag(str_tag);
+	}while(!fs.eof() && aux_tag != tag_field);
+	
+	if(fs.eof())
+		return "";
+	field = line.substr(2);
+
+	getline(fs,line);
+	str_tag = line.substr(0,2);
+	aux_tag = ConvertStringToTag(str_tag);
+
+	if(aux_tag == NIL)
 	{
-		case RN:
-			current_tag = RN;
-			field = line;
-		break;
-		case TI:
-			current_tag = TI;
-			field = line;
-		break;
-		case AB:
-			current_tag = AB;
-			field = line;
-		break;
+		if(!fs.eof())
+			Return1Line(line.size());		
+		
+		while(!fs.eof() && aux_tag == NIL)
+		{
+			getline(fs,line);
+			str_tag = line.substr(0,2);
+			aux_tag = ConvertStringToTag(str_tag);
+			
+			if(aux_tag == NIL)
+				field += " " + line.substr(2);
+		}
+
+		if(!fs.eof())
+			Return1Line(line.size());
 	}
+
+	return field;
 }
 
-
-
-
-
+void Parser::Return1Line(long line_size)
+{
+	long tam = fs.tellg();
+	long line = line_size + 1;
+	fs.seekg(tam-line);
+}
