@@ -11,11 +11,10 @@
 
 using namespace std;
 
-enum Tag {PN, RN, AN, AU, TI, SO, MJ, MN, AB, RF, CT, NIL};
+enum Tag {PN, RN, AN, AU, TI, SO, MJ, MN, AB, EX, RF, CT, NIL, NONE};
 
 class Parser
 {
-
 private:
 	string base_path, field; //path without id file
 	fstream fs;
@@ -25,7 +24,7 @@ private:
 
 	int ReadCollection(int doc);
 	int ReadDocument();
-	string ReadField(Tag tag_field);
+	string ReadField(Tag tag_field, Tag tag_sin = NONE);
 	void InitializeMapTag();
 	Tag ConvertStringToTag(string tag);
 	void Return1Line(long line_size);

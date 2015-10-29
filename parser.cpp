@@ -31,6 +31,7 @@ void Parser::InitializeMapTag()
 	tag["MJ"] = MJ;
 	tag["MN"] = MN;
 	tag["AB"] = AB;
+	tag["EX"] = EX;
 	tag["RF"] = RF;
 	tag["CT"] = CT;
 }
@@ -47,7 +48,7 @@ Tag Parser::ConvertStringToTag(string str_tag)
 
 int Parser::Process()
 {
-	for (int i = 74; i < 75; ++i)
+	for (int i = 74; i < 80; ++i)
 	{
 		ReadCollection(i);
 	}
@@ -92,7 +93,7 @@ int Parser::ReadDocument()
 			document->SetRN(result_str);
 			result_str = ReadField(TI);
 			document->SetTI(result_str);
-			result_str = ReadField(AB);
+			result_str = ReadField(AB, EX);
 			document->SetAB(result_str);
 			documents->push_back(document);
 		}
@@ -101,7 +102,7 @@ int Parser::ReadDocument()
 	return 0;
 }
 
-string Parser::ReadField(Tag tag_field)
+string Parser::ReadField(Tag tag_field, Tag tag_sin)
 {
 	string line, str_tag;
 	Tag aux_tag = tag_field;
@@ -110,11 +111,18 @@ string Parser::ReadField(Tag tag_field)
 		getline(fs,line);
 		str_tag = line.substr(0,2);
 		aux_tag = ConvertStringToTag(str_tag);
-	}while(!fs.eof() && aux_tag != tag_field);
+		if(aux_tag == tag_field)
+			break;
+		if(aux_tag == tag_sin)
+			break;
+
+	}while( !fs.eof());
 	
 	if(fs.eof())
 		return "";
-	field = line.substr(2);
+
+	//start from 3 character
+	field = line.substr(3);
 
 	getline(fs,line);
 	str_tag = line.substr(0,2);
@@ -132,7 +140,7 @@ string Parser::ReadField(Tag tag_field)
 			aux_tag = ConvertStringToTag(str_tag);
 			
 			if(aux_tag == NIL)
-				field += " " + line.substr(2);
+				field += " " + line;
 		}
 
 		if(!fs.eof())
