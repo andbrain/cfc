@@ -9,7 +9,7 @@ LFLAGS = -Wall
 all: pt clean 
 
 pt: $(OBJS)
-	$(CC) $(LFLAGS) $(OBJS) -o $(BIN)
+	$(CC) $(LFLAGS) $(OBJS) $(DEBUG) -o $(BIN)
 parser.o: parser.cpp
 	$(CC) $(CFLAGS) parser.cpp
 document.o:
