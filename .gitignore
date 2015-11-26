@@ -26,6 +26,8 @@
 *.exe
 *.out
 *.app
+indexer
+engine
 
 # sublime project
 *.sublime-project

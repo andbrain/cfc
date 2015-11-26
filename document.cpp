@@ -15,6 +15,11 @@ string Document::GetRN()
 	return record_number;
 }
 
+string Document::GetAU()
+{
+	return author;
+}
+
 string Document::GetTI()
 {
 	return title;
@@ -28,6 +33,11 @@ string Document::GetAB()
 void Document::SetRN(string rn)
 {
 	record_number = rn;
+}
+
+void Document::SetAU(string au)
+{
+	author = au;
 }
 
 void Document::SetTI(string ti)

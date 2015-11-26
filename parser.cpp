@@ -4,7 +4,6 @@ Parser::Parser(string dataset_path)
 {
 	cout << "..Starting parsing" << endl;
 	this->base_path = dataset_path + "cf";
-	this->hash = new unordered_map<string,Word *>();
 	this->documents = new vector<Document *>();
 	InitializeMapTag();
 }
@@ -15,8 +14,6 @@ Parser::~Parser()
 
 	for(it; it!= documents->end(); ++it)
 		delete (*it);
-
-	delete hash;
 	cout << "..Finishing parsing" << endl;
 }
 
@@ -46,23 +43,17 @@ Tag Parser::ConvertStringToTag(string str_tag)
 		return NIL;
 }
 
+vector<Document *>* Parser::GetCollection()
+{
+	return documents;
+}
+
 int Parser::Process()
 {
 	for (int i = 74; i < 80; ++i)
 	{
 		ReadCollection(i);
 	}
-
-	vector<Document *>::iterator it = documents->begin();
-
-	for(it; it!= documents->end(); ++it)
-	{
-		cout << "************************" << endl;
-		cout << "RN: " << (*it)->GetRN() << endl;
-		cout << "TI: " << (*it)->GetTI() << endl;
-		cout << "AB: " << (*it)->GetAB() << endl;
-		cout << "************************" << endl;
-	}	
 
 	return 0;
 }
@@ -91,6 +82,8 @@ int Parser::ReadDocument()
 		{
 			document = new Document();
 			document->SetRN(result_str);
+			result_str = ReadField(AU);
+			document->SetAU(result_str);
 			result_str = ReadField(TI);
 			document->SetTI(result_str);
 			result_str = ReadField(AB, EX);
@@ -111,11 +104,9 @@ string Parser::ReadField(Tag tag_field, Tag tag_sin)
 		getline(fs,line);
 		str_tag = line.substr(0,2);
 		aux_tag = ConvertStringToTag(str_tag);
-		if(aux_tag == tag_field)
-			break;
-		if(aux_tag == tag_sin)
-			break;
 
+		if(aux_tag == tag_field || aux_tag == tag_sin)
+			break;
 	}while( !fs.eof());
 	
 	if(fs.eof())
@@ -146,6 +137,8 @@ string Parser::ReadField(Tag tag_field, Tag tag_sin)
 		if(!fs.eof())
 			Return1Line(line.size());
 	}
+	else
+		Return1Line(line.size());
 
 	return field;
 }
