@@ -10,84 +10,65 @@ Hash_Table::~Hash_Table()
 {
 
 	unordered_map<string,Term *>::iterator it = hash_map->begin();
-	Document *doc;
-	Term *term, *aux;
+	Doc *doc;
+	Term *term;
 
 	for (it; it != hash_map->end(); ++it)
 	{
 		//deleting all term into the hash_table
 		term = it->second;
-
+		
 		do
 		{
-			aux = term->next;
-			do
-			{
-				doc = term->document;
-				term->document = doc->next;
-				delete doc;
-			}while(term->document != NULL);
-		
-			delete term;
-			term = aux;
-		}while(term != NULL);
-
+			doc = term->document;
+			term->document = doc->next;
+			delete doc;
+		}while(term->document != NULL);
+	
+		delete term;	
 	}
 	cout << "Finishing hash table" << endl;	
 }
 
 void Hash_Table::AddContent(string str, string doc_id)
 {
-	unordered_map<string,Term *>::iterator it = hash_map->find(str);
-	Document *doc;
+	string word_lower = StrToLower(str);
+	unordered_map<string,Term *>::iterator it = hash_map->find(word_lower);
+	Doc *doc;
 
 	if (it == hash_map->end())
 	{
 		//new string term
-		Document *doc = new Document();
+		doc = new Doc();
 		doc->id = doc_id;
-		doc->frequence = 1;
 		doc->next = NULL;
 
 		Term *term = new Term();
-		term->content = str;
+		term->content = word_lower;
 		term->document = doc;
-		term->next = NULL;
 
-		hash_map->insert(pair<string,Term *>(str,term));
+		hash_map->insert(pair<string,Term *>(word_lower,term));
 	}
 	else
 	{
-		//already have string term inside the hash table
-		Term *term = it->second;
+		Term *term = it->second;		
+		doc = term->document;
 
-		while(term != NULL)
+		if(doc->id == doc_id)
 		{
-			if (term->content == str)
-			{
-				doc = term->document;
-
-				if(doc->id == doc_id)
-				{
-					//add frequence to document
-					doc->frequence++;
-				}
-				else
-				{
-					//add new document as first
-					Document *new_doc = new Document();
-					new_doc->id = doc_id;
-					new_doc->frequence = 1;
-					new_doc->next = doc;
-					term->document = new_doc;
-				}
-				break;
-			}
-
-			//TODO:: Get know in how to resolve collides or maybe unordered map encapsule it for us...
-			term = term->next;			
+			//add frequence to document
+			doc->frequence++;
 		}
-
+		else
+		{
+			//add new document as first
+			Doc *new_doc = new Doc();
+			new_doc->id = doc_id;
+			new_doc->frequence++;
+			new_doc->next = doc;
+			term->document = new_doc;
+			term->frequence++;
+		}
 	}
 }
 
@@ -95,7 +76,7 @@ void Hash_Table::Print()
 {
 	unordered_map<string,Term *>::iterator it = hash_map->begin();
 	Term *term;
-	Document *doc;
+	Doc *doc;
 	int bucket, size_bucket;
 
 	cout << "$$$ Elements of hash table $$$" << endl;

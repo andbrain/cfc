@@ -4,6 +4,8 @@
 #include <iostream>
 #include <unordered_map>
 
+#include "util.h"
+
 using namespace std;
 
 
@@ -16,18 +18,18 @@ public:
 	void Print();
 
 private:
-	struct Document
+	struct Doc
 	{
 		string id;
-		int frequence;
-		Document *next;
+		int frequence = 1;
+		Doc *next;
 	};
 
 	struct Term
 	{
 		string content;
-		Term *next;
-		Document *document;
+		int frequence = 1;
+		Doc *document;
 	};
 	unordered_map<string,Term *> *hash_map;
 };
