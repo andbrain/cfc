@@ -83,11 +83,11 @@ int Parser::ReadDocument()
 		++counter;
 		str_result = ReadField();
 		// pattern: Tag#content
-		
+
 		if(str_result != "")
 		{
 			str_tag = str_result.substr(0,2);
-			str_content = str_result.substr(4); //start from 4 to leave out the character '#'
+			str_content = str_result.substr(3); //start from 3 to leave out the character '#'
 
 			if(ConvertStringToTag(str_tag) == PN)
 			{
