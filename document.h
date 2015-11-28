@@ -2,6 +2,7 @@
 #define DOCUMENT_H
 
 #include <iostream>
+#include <map>
 
 using namespace std;
 
@@ -11,21 +12,11 @@ class Document
 public:
 	Document();
 	~Document();
-
-	string GetRN();
-	string GetAU();
-	string GetTI();
-	string GetAB();
-	void SetRN(string rn);
-	void SetAU(string au);
-	void SetTI(string ti);
-	void SetAB(string ab);
-
+	void SetAttribute(string attr, string content);
+	string GetAttribute(string attr);
+	
 private:
-	string record_number;
-	string title;
-	string abstract;
-	string author;
+	map<string,string> attributes;	
 };
 
 #endif

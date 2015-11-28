@@ -10,42 +10,12 @@ Document::~Document()
 
 }
 
-string Document::GetRN()
+string Document::GetAttribute(string attr)
 {
-	return record_number;
+	return attributes[attr];
 }
 
-string Document::GetAU()
+void Document::SetAttribute(string attr, string content)
 {
-	return author;
-}
-
-string Document::GetTI()
-{
-	return title;
-}
-
-string Document::GetAB()
-{
-	return abstract;
-}
-
-void Document::SetRN(string rn)
-{
-	record_number = rn;
-}
-
-void Document::SetAU(string au)
-{
-	author = au;
-}
-
-void Document::SetTI(string ti)
-{
-	title = ti;
-}
-
-void Document::SetAB(string ab)
-{
-	abstract = ab;
+	attributes[attr] = content;
 }
