@@ -5,19 +5,6 @@
 
 using namespace std;
 
-struct Doc
-{
-	int id;
-	int frequence;
-	Doc *next;
-};
-
-struct Word
-{
-	string content;
-	Word *next;
-	Doc *doc;
-};
-
+string StrToLower(string str);
 
 #endif
