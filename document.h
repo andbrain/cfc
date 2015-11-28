@@ -14,7 +14,8 @@ public:
 	~Document();
 	void SetAttribute(string attr, string content);
 	string GetAttribute(string attr);
-	
+	map<string,string>::iterator Begin();
+	map<string,string>::iterator End();
 private:
 	map<string,string> attributes;	
 };
