@@ -1,32 +1,90 @@
-#include <iostream>
-#include <cstdlib>
-#include "parser.h"
+#include "indexer.h"
 
-using namespace std;
-
-int main()
+Indexer::Indexer(vector<Document *>* base)
 {
-	Parser *parser = new Parser("base/");
-	parser->Process();
-	vector<Document *>* collection = parser->GetCollection();
+	cout << "Creating indexer" << endl;
+	this->base = base;
+	this->hash = new Hash_Table();
+}
 
-	vector<Document *>::iterator it = collection->begin();
+Indexer::~Indexer()
+{
+	delete this->hash;
+	cout << "Deleting indexer" << endl;
+}
 
-	int rn, aux = 0, counter=0;
-	for(it; it!= collection->end(); ++it)
+void Indexer::Initialize()
+{
+	LoadStopWords();
+}
+
+void Indexer::LoadStopWords()
+{
+	fstream fs(STOPWORDS_FILE);
+
+	string line;
+
+	while(getline(fs,line))
+		stopwords[line] = 1;
+
+	fs.close();
+}
+
+bool Indexer::IsStopWords(string word)
+{
+	string word_lower = StrToLower(word);
+	unordered_map<string,int>::const_iterator got = stopwords.find(word_lower);
+
+	if(got != stopwords.end())
+		return true;
+
+	return false;
+}
+
+void Indexer::Process()
+{
+	cout << "Processing..." << endl;
+
+	vector<Document *>::iterator it = base->begin();
+	string doc_id;
+
+	for(it; it!= base->end(); ++it)
 	{
-		rn = atoi((*it)->GetAttribute("RN").c_str());
+		doc_id = (*it)->GetAttribute("RN");
 
-		if(rn != aux+1){
-			cout << "[GAP]" << endl;
-			counter++;
+		map<string,string>::iterator attr = (*it)->Begin();
+
+		for(attr; attr != (*it)->End(); ++attr)
+		{
+			SplitField(doc_id, attr->second);
 		}
-		aux = rn;
-		
-		cout << "RN: " << rn << endl;
 	}
 
-	cout << "Size of vector: " << collection->size() << endl;	
-	cout << "Quantity of gaps: " << counter << endl;
-	delete parser;
+	hash->Print();
 }
+
+
+void Indexer::SplitField(string id, string line)
+{
+	string::iterator it;
+	string word = "";
+
+	for(it = line.begin(); it != line.end(); ++it)
+	{
+		//TODO:: check if is necessary to evaluate symbol '-'. Eg: bottle-neck
+		//limit of 40 characteres per word
+		if (isalpha(*it) && word.size() < 40)
+			word += *it;
+		else
+		{
+			if(word != "" && !IsStopWords(word))
+			{
+				// word = MakeStemming(word);
+				hash->AddContent(word, id);				
+			}
+			
+			word = "";
+		}
+	}
+}
+
