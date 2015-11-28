@@ -6,6 +6,7 @@ Parser::Parser(string dataset_path)
 	this->base_path = dataset_path + "cf";
 	this->documents = new vector<Document *>();
 	InitializeMapTag();
+	field = "";
 }
 
 Parser::~Parser()
@@ -31,6 +32,7 @@ void Parser::InitializeMapTag()
 	tag["EX"] = EX;
 	tag["RF"] = RF;
 	tag["CT"] = CT;
+
 }
 
 Tag Parser::ConvertStringToTag(string str_tag)
@@ -72,48 +74,55 @@ int Parser::ReadCollection(int doc)
 
 int Parser::ReadDocument()
 {	
-	string result_str;
+	string str_result, str_tag, str_content;
 	Document *document;
+	int counter = 0;
 
 	while(!fs.eof())
 	{
-		result_str = ReadField(RN);
-		if(result_str != "")
+		++counter;
+		str_result = ReadField();
+		// pattern: Tag#content
+		
+		if(str_result != "")
 		{
-			document = new Document();
-			document->SetRN(result_str);
-			result_str = ReadField(AU);
-			document->SetAU(result_str);
-			result_str = ReadField(TI);
-			document->SetTI(result_str);
-			result_str = ReadField(AB, EX);
-			document->SetAB(result_str);
-			documents->push_back(document);
+			str_tag = str_result.substr(0,2);
+			str_content = str_result.substr(4); //start from 4 to leave out the character '#'
+
+			if(ConvertStringToTag(str_tag) == PN)
+			{
+				document = new Document();
+				document->SetAttribute(str_tag, str_content);
+				documents->push_back(document);				
+			}
+			else //TODO:: Can filter after with specific tags
+				document->SetAttribute(str_tag, str_content);
 		}
 	}
 
 	return 0;
 }
 
-string Parser::ReadField(Tag tag_field, Tag tag_sin)
+string Parser::ReadField()
 {
 	string line, str_tag;
-	Tag aux_tag = tag_field;
+	Tag aux_tag;
 
 	do{
 		getline(fs,line);
 		str_tag = line.substr(0,2);
 		aux_tag = ConvertStringToTag(str_tag);
 
-		if(aux_tag == tag_field || aux_tag == tag_sin)
-			break;
+		if(aux_tag != NIL)
+			break;		
 	}while( !fs.eof());
 	
 	if(fs.eof())
 		return "";
 
+	field = str_tag + "#";
 	//start from 3 character
-	field = line.substr(3);
+	field += line.substr(3);
 
 	getline(fs,line);
 	str_tag = line.substr(0,2);
