@@ -6,6 +6,7 @@ Parser::Parser(string dataset_path)
 	this->base_path = dataset_path + "cf";
 	this->documents = new vector<Document *>();
 	InitializeMapTag();
+	InitializeMapSelTags();
 	field = "";
 }
 
@@ -32,8 +33,27 @@ void Parser::InitializeMapTag()
 	tag["EX"] = EX;
 	tag["RF"] = RF;
 	tag["CT"] = CT;
-
 }
+
+void Parser::InitializeMapSelTags()
+{
+	sel_tags["RN"] = RN;
+	sel_tags["AU"] = AU;
+	sel_tags["TI"] = TI;
+	sel_tags["AB"] = AB;
+	sel_tags["EX"] = EX;
+}
+
+bool Parser::InMapSelTags(string str_tag)
+{
+	unordered_map<string,Tag>::const_iterator it;
+	
+	if (sel_tags.find(str_tag) != sel_tags.end())
+		return true;
+	
+	return false;
+}
+
 
 Tag Parser::ConvertStringToTag(string str_tag)
 {
@@ -95,7 +115,7 @@ int Parser::ReadDocument()
 				document->SetAttribute(str_tag, str_content);
 				documents->push_back(document);				
 			}
-			else //TODO:: Can filter after with specific tags
+			else if(InMapSelTags(str_tag))
 				document->SetAttribute(str_tag, str_content);
 		}
 	}

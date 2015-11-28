@@ -4,7 +4,7 @@ Indexer::Indexer(vector<Document *>* base)
 {
 	cout << "Creating indexer" << endl;
 	this->base = base;
-	this->hash = new Hash_Table();
+	this->hash = new Hash_Table(base->size());
 }
 
 Indexer::~Indexer()

@@ -19,12 +19,15 @@ private:
 	string field; //content of each field
 	fstream fs;
 	unordered_map <string,Tag> tag;
+	unordered_map <string,Tag> sel_tags;
 	vector<Document *> *documents;
 
 	int ReadCollection(int doc);
 	int ReadDocument();
 	string ReadField();
 	void InitializeMapTag();
+	void InitializeMapSelTags();
+	bool InMapSelTags(string str_tag);
 	Tag ConvertStringToTag(string tag);
 	void Return1Line(long line_size);
 

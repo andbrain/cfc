@@ -1,9 +1,10 @@
 #include "hash_table.h"
 
-Hash_Table::Hash_Table()
+Hash_Table::Hash_Table(int total_documents)
 {
 	cout << "Starting hash table" << endl;
 	hash_map = new unordered_map<string,Term *>();
+	this->total_documents = total_documents;
 }
 
 Hash_Table::~Hash_Table()
@@ -46,7 +47,6 @@ void Hash_Table::AddContent(string str, string doc_id)
 		Term *term = new Term();
 		term->content = word_lower;
 		term->document = doc;
-
 		hash_map->insert(pair<string,Term *>(word_lower,term));
 	}
 	else
@@ -86,18 +86,22 @@ void Hash_Table::Print()
 	{
 		cout << "[" << it->first << "]:" << endl;
 		
-		cout << "\t";
-		bucket = hash_map->bucket(it->first);
-		cout << "bucket #" << bucket << endl;
+		// cout << "\t";
+		// bucket = hash_map->bucket(it->first);
+		// cout << "bucket #" << bucket << endl;
 
-		cout << "\t";
-		size_bucket = hash_map->bucket_size(bucket);
-		cout << "bucket size:" << size_bucket << endl;
+		// cout << "\t";
+		// size_bucket = hash_map->bucket_size(bucket);
+		// cout << "bucket size:" << size_bucket << endl;
 
 		term = it->second;
 		cout << "\t";
-		cout << "Content => "<< term->content << endl;
-
+		cout << "Content => " << term->content << endl;
+		cout << "\t";
+		cout << "IDF => " << CalculateIDF(total_documents, term->frequence) << endl;
+		cout << "\t";
+		cout << "Repetitions in docs => " << term->frequence << endl;
+		
 		doc = term->document;
 
 		do{

@@ -12,9 +12,10 @@ using namespace std;
 class Hash_Table
 {
 public:
-	Hash_Table();
+	Hash_Table(int total_documents);
 	~Hash_Table();
 	void AddContent(string str, string doc_id);
+	void SetTotalDocuments(int total);
 	void Print();
 
 private:
@@ -32,6 +33,7 @@ private:
 		Doc *document;
 	};
 	unordered_map<string,Term *> *hash_map;
+	int total_documents;
 };
 
 
