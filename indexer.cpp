@@ -59,8 +59,6 @@ void Indexer::Process()
 			SplitField(doc_id, attr->second);
 		}
 	}
-
-	hash->Print();
 }
 
 
@@ -86,5 +84,10 @@ void Indexer::SplitField(string id, string line)
 			word = "";
 		}
 	}
+}
+
+void Indexer::Print()
+{
+	hash->Print();
 }
 

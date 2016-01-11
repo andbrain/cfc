@@ -21,7 +21,7 @@ public:
 	~Indexer();
 	void Initialize();
 	void Process();
-
+	void Print();
 private:
 	vector<Document *>* base;
 	Hash_Table *hash;
