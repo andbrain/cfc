@@ -35,3 +35,4 @@ engine
 
 # dataset
 base/*
+base.*
