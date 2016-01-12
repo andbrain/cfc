@@ -31,7 +31,6 @@ vector<string> Ireader::Split(const string &s,  char delim) {
 void Ireader::Process()
 {
 	ReadReferences();
-	ReadData();
 }
 
 void Ireader::ReadReferences()
@@ -48,16 +47,11 @@ void Ireader::ReadReferences()
 	}
 }
 
-void Ireader::ReadData()
-{
-
-}
-
-feature* Ireader::GetStruct(string term)
+Term* Ireader::GetStruct(string term)
 {
 
 	unordered_map<string,double>::iterator it = references->find(term);
-	feature *f = NULL;
+	Term *f = NULL;
 	
 	if(it != references->end())
 	{
@@ -65,9 +59,9 @@ feature* Ireader::GetStruct(string term)
 		double pos = it->second;
 
 		// f = (struct feature*)malloc(sizeof(struct feature));
-		f = new feature();
+		f = new Term();
 		fs.seekg(pos);
-		fs.read((char*)f, sizeof(feature));
+		fs.read((char*)f, sizeof(Term));
 		//TODO:: try to use reinterpret_cast to convert strings
 		fs.close();
 		// free(f);

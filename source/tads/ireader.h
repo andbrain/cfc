@@ -18,13 +18,12 @@ public:
 	Ireader(string filename);
 	~Ireader();
 	void Process();
-	feature* GetStruct(string term);
+	Term* GetStruct(string term);
 
 private:
 	string path_ref, path_dat;
 	unordered_map<string, double> *references;
 	void ReadReferences();
-	void ReadData();
 	vector<string> Split(const string &s,  char delim);
 
 };
