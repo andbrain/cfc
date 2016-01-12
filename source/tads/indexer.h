@@ -9,6 +9,7 @@
 #include "document.h"
 #include "hash_table.h"
 #include "util.h"
+#include "iwriter.h"
 
 #define STOPWORDS_FILE "resources/stopwords.dat"
 
@@ -22,6 +23,7 @@ public:
 	void Initialize();
 	void Process();
 	void Print();
+	void WriteIndexFile();
 private:
 	vector<Document *>* base;
 	Hash_Table *hash;

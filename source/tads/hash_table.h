@@ -5,6 +5,7 @@
 #include <unordered_map>
 
 #include "util.h"
+#include "index.h"
 
 using namespace std;
 
@@ -17,21 +18,9 @@ public:
 	void AddContent(string str, string doc_id);
 	void SetTotalDocuments(int total);
 	void Print();
+	unordered_map<string,Term *>* GetHash_Table();
 
-private:
-	struct Doc
-	{
-		string id;
-		int frequence = 1;
-		Doc *next;
-	};
-
-	struct Term
-	{
-		string content;
-		int frequence = 1;
-		Doc *document;
-	};
+private:	
 	unordered_map<string,Term *> *hash_map;
 	int total_documents;
 };

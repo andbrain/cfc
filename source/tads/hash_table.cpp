@@ -121,3 +121,9 @@ void Hash_Table::Print()
 	}
 }
 
+unordered_map<string,Term *>* Hash_Table::GetHash_Table()
+{
+	return hash_map;
+}
+
+

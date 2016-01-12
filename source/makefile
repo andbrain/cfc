@@ -20,7 +20,7 @@ LFLAGS = -Wall
 ## Objs
 ##
 
-OBJS_INDEXER = objs/indexation.o objs/parser.o objs/util.o objs/indexer.o objs/document.o objs/hash_table.o
+OBJS_INDEXER = objs/indexation.o objs/parser.o objs/util.o objs/indexer.o objs/iwriter.o objs/document.o objs/hash_table.o
 # OBJS_INDEXER := $(wildcard objs/*.o)
 OBJS_ENGINE = objs/engine.o
 
@@ -45,7 +45,9 @@ hash_table.o: util.o
 	$(CC) $(CFLAGS) $(TADS)/hash_table.cpp -o $(TEMP)/hash_table.o
 util.o:
 	$(CC) $(CFLAGS) $(TADS)/util.cpp -o $(TEMP)/util.o
-indexer.o: parser.o util.o
+iwriter.o:
+	$(CC) $(CFLAGS) $(TADS)/iwriter.cpp -o $(TEMP)/iwriter.o
+indexer.o: parser.o util.o iwriter.o
 	$(CC) $(CFLAGS) $(TADS)/indexer.cpp -o $(TEMP)/indexer.o
 indexation.o: parser.o indexer.o
 	$(CC) $(CFLAGS) indexation.cpp -o objs/indexation.o

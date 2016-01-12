@@ -91,3 +91,12 @@ void Indexer::Print()
 	hash->Print();
 }
 
+void Indexer::WriteIndexFile()
+{
+	Iwriter *iw = new Iwriter("base", hash->GetHash_Table());
+	iw->Generate();
+
+	delete iw;
+}
+
+

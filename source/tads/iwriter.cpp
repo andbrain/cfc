@@ -1,6 +1,6 @@
 #include "iwriter.h"
 
-Iwriter::Iwriter(string filename, unordered_map<string,feature*> *terms)
+Iwriter::Iwriter(string filename, unordered_map<string,Term*> *terms)
 {
 	this->terms = terms;
 	Initialize(filename);
@@ -32,7 +32,7 @@ void Iwriter::InitFile(string path)
 
 void Iwriter::Generate()
 {
-	unordered_map<string, feature*>::iterator it = terms->begin();
+	unordered_map<string, Term*>::iterator it = terms->begin();
 	fstream fs_ref(path_ref, ios::out | ios::app);
 	fstream fs_dat(path_dat, ios::out | ios::app | ios::binary);
 	double pos = 0;
@@ -40,9 +40,9 @@ void Iwriter::Generate()
 	for (it; it != terms->end(); ++it)
 	{
 		fs_ref << it->first << " " << pos << endl;
-		pos += sizeof(feature);
+		pos += sizeof(Term);
 
-		fs_dat.write((char*)it->second, sizeof(feature));	
+		fs_dat.write((char*)it->second, sizeof(Term));	
 	}
 
 	fs_ref.close();
