@@ -41,8 +41,20 @@ void Iwriter::Generate()
 	{
 		fs_ref << it->first << " " << pos << endl;
 		pos += sizeof(Term);
+		fs_dat.write((char*)it->second, sizeof(Term));
 
-		fs_dat.write((char*)it->second, sizeof(Term));	
+		//write information cells
+		Doc *infor = it->second->document;
+		pos += sizeof(Doc);
+		fs_dat.write((char*)infor, sizeof(Doc));	
+
+		while(infor->next != NULL)
+		{
+			Doc *cur = infor->next;
+			pos += sizeof(Doc);
+			fs_dat.write((char*)cur, sizeof(Doc));
+			infor = cur;
+		}
 	}
 
 	fs_ref.close();

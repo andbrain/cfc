@@ -49,9 +49,12 @@ void Ireader::ReadReferences()
 
 Term* Ireader::GetStruct(string term)
 {
-
+	//TODO:: Must see a way of dealloc Term pointers after this method
+	
 	unordered_map<string,double>::iterator it = references->find(term);
 	Term *f = NULL;
+	Doc *inf, *cur;
+
 	
 	if(it != references->end())
 	{
@@ -62,9 +65,22 @@ Term* Ireader::GetStruct(string term)
 		f = new Term();
 		fs.seekg(pos);
 		fs.read((char*)f, sizeof(Term));
-		//TODO:: try to use reinterpret_cast to convert strings
+		// fs.read(reinterpret_cast<char *>(f),sizeof(Term));
+		
+		inf = new Doc();
+		fs.read((char*)inf, sizeof(Doc));
+		f->inf = inf;
+
+		while(inf->next != NULL)
+		{
+			cur = new Doc();
+			fs.read((char*)cur, sizeof(Doc));
+			inf->next = cur;
+			inf = cur;
+		}
+
 		fs.close();
-		// free(f);
+
 		return f;
 	}
 
