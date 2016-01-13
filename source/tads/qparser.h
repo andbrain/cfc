@@ -22,8 +22,7 @@ public:
 private:
 	string base_path, field;
 	vector<Document *> *documents;
-	unordered_map <string,Tag> tag;
-	unordered_map <string,Tag> sel_tags;
+	unordered_map <string,Tag> tag, sel_tags;
 	fstream fs;
 
 	void InitializeMapTag();

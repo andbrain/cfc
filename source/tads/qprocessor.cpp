@@ -15,6 +15,8 @@ Qprocessor::~Qprocessor()
 
 void Qprocessor::Initialize()
 {
+	LoadStopWords();
+	
 	Query *query;
 
 	for (vector<Document *>::iterator i = base->begin(); i != base->end(); ++i)
@@ -60,7 +62,31 @@ void Qprocessor::SelectRelDocs(unordered_map<int,int> *docs, string listDocs)
 	}
 }
 
+void Qprocessor::LoadStopWords()
+{
+	fstream fwords(STOPWORDS_FILE, ios::in);
+
+	string line;
+
+	while(getline(fwords,line))
+		stopwords[line] = 1;
+	
+	fwords.close();
+}
+
+bool Qprocessor::IsStopWords(string word)
+{
+	string word_lower = StrToLower(word);
+	unordered_map<string,int>::const_iterator got = stopwords.find(word_lower);
+
+	if(got != stopwords.end())
+		return true;
+
+	return false;
+}
+
 int Qprocessor::Process()
 {
 
 }
+

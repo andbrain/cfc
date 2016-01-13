@@ -20,14 +20,14 @@ void Indexer::Initialize()
 
 void Indexer::LoadStopWords()
 {
-	fstream fs(STOPWORDS_FILE);
+	fstream fwords(STOPWORDS_FILE, ios::in);
 
 	string line;
 
-	while(getline(fs,line))
+	while(getline(fwords,line))
 		stopwords[line] = 1;
-
-	fs.close();
+	
+	fwords.close();
 }
 
 bool Indexer::IsStopWords(string word)

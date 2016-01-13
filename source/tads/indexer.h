@@ -11,7 +11,7 @@
 #include "util.h"
 #include "iwriter.h"
 
-#define STOPWORDS_FILE "resources/stopwords.dat"
+#define STOPWORDS_FILE "source/resources/stopwords.dat"
 
 using namespace std;
 
