@@ -7,6 +7,7 @@
 #include "document.h"
 #include "query.h"
 #include "util.h"
+#include "ireader.h"
 
 #define STOPWORDS_FILE "source/resources/stopwords.dat"
 
@@ -21,14 +22,18 @@ public:
 	int Process();
 
 private:
-	vector<Document *>* base;
 	vector<Query *> queries;
+	vector<Document *>* base;
 	unordered_map<string,int> stopwords;
-
+	Ireader *ir;
+	//initializing processor
 	void SelectRelDocs(unordered_map<int,int> *docs, string listDocs);
 	void LoadStopWords();
 	bool IsStopWords(string word);
 	vector<string> SelectWords(string question);
+
+	//proccess of queries
+	int ProcessQuery(Query *query);
 };
 
 #endif

@@ -1,7 +1,7 @@
 #include <iostream>
-#include "tads/ireader.h"
 #include "tads/qparser.h"
 #include "tads/qprocessor.h"
+#include "tads/ireader.h"
 using namespace std;
 
 int main()
@@ -12,7 +12,8 @@ int main()
 	parser->Process();
 	Qprocessor *proc = new Qprocessor(parser->GetCollection()); 
 	proc->Initialize();
-	
+	proc->Process();
+
 	delete proc;
 	delete parser;
 	cout << "Engine finishing" << endl;

@@ -3,6 +3,9 @@
 Qprocessor::Qprocessor(vector<Document *>* base)
 {
 	this->base = base;
+
+	ir = new Ireader("base");
+	ir->Process();
 }
 
 Qprocessor::~Qprocessor()
@@ -11,6 +14,8 @@ Qprocessor::~Qprocessor()
 	{
 		delete queries[i];
 	}
+
+	delete ir;
 }
 
 void Qprocessor::Initialize()
@@ -98,7 +103,7 @@ vector<string> Qprocessor::SelectWords(string question)
 		else
 		{
 			if(word != "" && !IsStopWords(word))
-				terms.push_back(word);
+				terms.push_back(StrToLower(word));
 			
 			word = "";			
 		}
@@ -109,6 +114,30 @@ vector<string> Qprocessor::SelectWords(string question)
 
 int Qprocessor::Process()
 {
+	//Proccess each query
+	// for (std::vector<Query *>::iterator q = queries.begin(); q != queries.end(); ++q)
+	for (std::vector<Query *>::iterator q = queries.begin(); q != queries.begin()+1; ++q)
+	{
+		ProcessQuery(*q);
+	}
+}
 
+int Qprocessor::ProcessQuery(Query *query)
+{
+	std::vector<string> words = query->content;
+	for (std::vector<string>::iterator w = words.begin(); w != words.end(); ++w)
+	{
+		cout << (*w) << endl;		
+	}
+	
+	// cout << endl;
+	// cout << endl;
+	
+	// Term* inv_list = ir->GetStruct("calcium");
+	// cout << inv_list->content << endl;
+	// cout << inv_list->frequence << endl;
+	// cout << inv_list->idf << endl;
+
+	// delete inv_list;
 }
 
