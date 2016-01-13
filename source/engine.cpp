@@ -1,20 +1,16 @@
 #include <iostream>
 #include "tads/ireader.h"
-
+#include "tads/qparser.h"
 using namespace std;
 
 int main()
 {
 	cout << "Engine starting" << endl;
 
-	Ireader *ir = new Ireader("base");
-	ir->Process();
+	Qparser *qp = new Qparser("base/cfquery");
+	qp->Process();
+	vector<Document *>*docs = qp->GetCollection();
 
-	string element = "stehr";
-	Term *f = ir->GetStruct(element);
-	cout << f->frequence << endl;
-	// cout << f->content << endl;
-	free(f);
-	delete ir;
+	delete qp;
 	cout << "Engine finishing" << endl;
 }

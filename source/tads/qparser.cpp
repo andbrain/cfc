@@ -1,50 +1,40 @@
-#include "parser.h"
+#include "qparser.h"
 
-Parser::Parser(string dataset_path)
+Qparser::Qparser(string path)
 {
-	cout << "..Starting parsing" << endl;
-	this->base_path = dataset_path + "cf";
+	cout << "..Starting query parser" << endl;
+	this->base_path = path;
 	this->documents = new vector<Document *>();
 	InitializeMapTag();
 	InitializeMapSelTags();
 	field = "";
 }
-
-Parser::~Parser()
+Qparser::~Qparser()
 {
 	vector<Document *>::iterator it = documents->begin();
 
 	for(it; it!= documents->end(); ++it)
 		delete (*it);
-	cout << "..Finishing parsing" << endl;
+	cout << "..Finishing query parser" << endl;	
 }
 
-void Parser::InitializeMapTag()
+void Qparser::InitializeMapTag()
 {
-	tag["PN"] = PN;
-	tag["RN"] = RN;
-	tag["AN"] = AN;
-	tag["AU"] = AU;
-	tag["TI"] = TI;
-	tag["SO"] = SO;
-	tag["MJ"] = MJ;
-	tag["MN"] = MN;
-	tag["AB"] = AB;
-	tag["EX"] = EX;
-	tag["RF"] = RF;
-	tag["CT"] = CT;
+	tag["QN"] = QN;
+	tag["QU"] = QU;
+	tag["NR"] = NR;
+	tag["RD"] = RD;	
 }
 
-void Parser::InitializeMapSelTags()
+void Qparser::InitializeMapSelTags()
 {
-	sel_tags["RN"] = RN;
-	sel_tags["AU"] = AU;
-	sel_tags["TI"] = TI;
-	sel_tags["AB"] = AB;
-	sel_tags["EX"] = EX;
+	sel_tags["QN"] = QN;
+	sel_tags["QU"] = QU;
+	sel_tags["NR"] = NR;
+	sel_tags["RD"] = RD;
 }
 
-bool Parser::InMapSelTags(string str_tag)
+bool Qparser::InMapSelTags(string str_tag)
 {
 	unordered_map<string,Tag>::const_iterator it;
 	
@@ -55,7 +45,7 @@ bool Parser::InMapSelTags(string str_tag)
 }
 
 
-Tag Parser::ConvertStringToTag(string str_tag)
+Tag Qparser::ConvertStringToTag(string str_tag)
 {
 	unordered_map<string,Tag>::const_iterator it;
 	
@@ -65,34 +55,23 @@ Tag Parser::ConvertStringToTag(string str_tag)
 		return NIL;
 }
 
-vector<Document *>* Parser::GetCollection()
+vector<Document *>* Qparser::GetCollection()
 {
 	return documents;
 }
 
-int Parser::Process()
-{
-	for (int i = 74; i < 80; ++i)
-	{
-		ReadCollection(i);
-	}
-
-	return 0;
-}
-
-int Parser::ReadCollection(int doc)
+int Qparser::Process()
 {
 	string tag,line;
 
-	fs.open(base_path + to_string(doc), ios::in);
+	fs.open(base_path, ios::in);
 	ReadDocument();
 	fs.close();
 
 	return 0;
 }
 
-
-int Parser::ReadDocument()
+int Qparser::ReadDocument()
 {	
 	string str_result, str_tag, str_content;
 	Document *document;
@@ -107,7 +86,7 @@ int Parser::ReadDocument()
 			str_tag = str_result.substr(0,2);
 			str_content = str_result.substr(3); //start from 3 to leave out the character '#'
 
-			if(ConvertStringToTag(str_tag) == PN)
+			if(ConvertStringToTag(str_tag) == QN)
 			{
 				document = new Document();
 				document->SetAttribute(str_tag, str_content);
@@ -121,7 +100,7 @@ int Parser::ReadDocument()
 	return 0;
 }
 
-string Parser::ReadField()
+string Qparser::ReadField()
 {
 	string line, str_tag;
 	Tag aux_tag;
@@ -170,7 +149,7 @@ string Parser::ReadField()
 	return field;
 }
 
-void Parser::Return1Line(long line_size)
+void Qparser::Return1Line(long line_size)
 {
 	long tam = fs.tellg();
 	long line = line_size + 1;

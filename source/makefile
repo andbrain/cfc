@@ -20,9 +20,9 @@ LFLAGS = -Wall
 ## Objs
 ##
 
-OBJS_INDEXER = objs/indexation.o objs/parser.o objs/util.o objs/indexer.o objs/iwriter.o objs/document.o objs/hash_table.o
+OBJS_INDEXER = $(TEMP)/indexation.o $(TEMP)/parser.o $(TEMP)/util.o $(TEMP)/indexer.o $(TEMP)/iwriter.o $(TEMP)/document.o $(TEMP)/hash_table.o
 # OBJS_INDEXER := $(wildcard objs/*.o)
-OBJS_ENGINE = $(TEMP)/engine.o $(TEMP)/ireader.o
+OBJS_ENGINE = $(TEMP)/engine.o $(TEMP)/ireader.o $(TEMP)/qparser.o $(TEMP)/document.o
 
 ##
 ## main target
@@ -58,13 +58,17 @@ indexation.o: parser.o indexer.o
 
 engine: engine.o
 	$(CC) $(LFLAGS) $(OBJS_ENGINE) $(DEBUG) -o $(BIN_ENGINE_SEARCH)
-engine.o: engine.cpp ireader.o
+engine.o: engine.cpp ireader.o qparser.o document.o
 	$(CC) $(CFLAGS) engine.cpp -o $(TEMP)/engine.o
 ireader.o:
 	$(CC) $(CFLAGS) $(TADS)/ireader.cpp -o $(TEMP)/ireader.o
+qparser.o:
+	$(CC) $(CFLAGS) $(TADS)/qparser.cpp -o $(TEMP)/qparser.o
+
+	
 ##
 ## Misc
 ##
 
 clean:
-	rm *.o objs/*.o
+	objs/*.o
