@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <unordered_map>
+#include <cstring>
 
 #include "util.h"
 #include "index.h"

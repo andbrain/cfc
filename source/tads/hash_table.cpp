@@ -41,11 +41,13 @@ void Hash_Table::AddContent(string str, string doc_id)
 	{
 		//new string term
 		doc = new Doc();
-		doc->id = doc_id;
+		// doc->id = doc_id;
+		strcpy(doc->id, doc_id.c_str());
 		doc->next = NULL;
 
 		Term *term = new Term();
-		term->content = word_lower;
+		// term->content = word_lower;
+		strcpy(term->content, word_lower.c_str());
 		term->document = doc;
 		hash_map->insert(pair<string,Term *>(word_lower,term));
 	}
@@ -54,7 +56,8 @@ void Hash_Table::AddContent(string str, string doc_id)
 		Term *term = it->second;		
 		doc = term->document;
 
-		if(doc->id == doc_id)
+		// if(doc->id == doc_id)
+		if(strcmp(doc->id,doc_id.c_str()) == 0)
 		{
 			//add frequence to document
 			doc->frequence++;
@@ -63,7 +66,8 @@ void Hash_Table::AddContent(string str, string doc_id)
 		{
 			//add new document as first
 			Doc *new_doc = new Doc();
-			new_doc->id = doc_id;
+			// new_doc->id = doc_id;
+			strcpy(new_doc->id, doc_id.c_str());
 			new_doc->frequence++;
 			new_doc->next = doc;
 			term->document = new_doc;
