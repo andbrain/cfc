@@ -16,14 +16,14 @@ Qprocessor::~Qprocessor()
 void Qprocessor::Initialize()
 {
 	LoadStopWords();
-	
+
 	Query *query;
 
 	for (vector<Document *>::iterator i = base->begin(); i != base->end(); ++i)
 	{
 		query = new Query();
 		query->number = atoi((*i)->GetAttribute("QN").c_str());
-		query->content = (*i)->GetAttribute("QU");
+		query->content = SelectWords((*i)->GetAttribute("QU"));
 		query->rel_total = atoi((*i)->GetAttribute("NR").c_str());
 		unordered_map<int,int> docs;
 		SelectRelDocs(&docs, (*i)->GetAttribute("RD"));
@@ -55,9 +55,9 @@ void Qprocessor::SelectRelDocs(unordered_map<int,int> *docs, string listDocs)
 				else 
 					get = true;
 
-				number = "";
 			}
 
+			number = "";
 		}
 	}
 }
@@ -83,6 +83,28 @@ bool Qprocessor::IsStopWords(string word)
 		return true;
 
 	return false;
+}
+
+vector<string> Qprocessor::SelectWords(string question)
+{
+	string::iterator it;
+	string word = "";
+	vector<string> terms;
+
+	for(it = question.begin(); it != question.end(); ++it)
+	{
+		if (isalpha(*it) && word.size() < 40)
+			word += *it;
+		else
+		{
+			if(word != "" && !IsStopWords(word))
+				terms.push_back(word);
+			
+			word = "";			
+		}
+	}
+
+	return terms;
 }
 
 int Qprocessor::Process()

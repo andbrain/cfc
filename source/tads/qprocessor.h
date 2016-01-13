@@ -28,6 +28,7 @@ private:
 	void SelectRelDocs(unordered_map<int,int> *docs, string listDocs);
 	void LoadStopWords();
 	bool IsStopWords(string word);
+	vector<string> SelectWords(string question);
 };
 
 #endif
