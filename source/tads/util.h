@@ -3,10 +3,13 @@
 
 #include <iostream>
 #include <cmath>
+#include "query.h"
 
 using namespace std;
 
 string StrToLower(string str);
 double CalculateIDF(int N, int n);
+bool sortBysim( Score *lhs, Score *rhs);
+bool sortBydoc( Score *lhs, Score *rhs);
 
 #endif

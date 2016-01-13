@@ -19,3 +19,13 @@ double CalculateIDF(int N, int n)
 	double number = (double)N/n;
 	return log(number)/log(2);
 }
+
+bool sortBysim( Score *lhs, Score *rhs) 
+{ 
+	return lhs->similarity > rhs->similarity; 
+}
+
+bool sortBydoc( Score *lhs, Score *rhs) 
+{ 
+	return lhs->document > rhs->document; 
+}

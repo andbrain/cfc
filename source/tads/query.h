@@ -12,4 +12,10 @@ struct Query
 	unordered_map<int,int> rel_docs; //identification of each relevant document
 };
 
+struct Score
+{
+	string document;
+	double similarity;
+};
+
 #endif
