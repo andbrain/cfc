@@ -59,6 +59,8 @@ void Indexer::Process()
 			SplitField(doc_id, attr->second);
 		}
 	}
+
+	hash->ProcessIDF();
 }
 
 

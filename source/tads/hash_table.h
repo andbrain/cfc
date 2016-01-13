@@ -20,6 +20,7 @@ public:
 	void SetTotalDocuments(int total);
 	void Print();
 	unordered_map<string,Term *>* GetHash_Table();
+	void ProcessIDF();
 
 private:	
 	unordered_map<string,Term *> *hash_map;

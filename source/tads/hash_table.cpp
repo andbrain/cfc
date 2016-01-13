@@ -130,4 +130,16 @@ unordered_map<string,Term *>* Hash_Table::GetHash_Table()
 	return hash_map;
 }
 
+void Hash_Table::ProcessIDF()
+{
+	unordered_map<string,Term *>::iterator it = hash_map->begin();
+	Term *term;
+	
+	for (it; it != hash_map->end(); ++it)
+	{
+		term = it->second;
+		term->idf = CalculateIDF(total_documents, term->frequence);
+	}
+}
+
 
