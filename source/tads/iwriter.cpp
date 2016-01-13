@@ -35,7 +35,7 @@ void Iwriter::Generate()
 	unordered_map<string, Term*>::iterator it = terms->begin();
 	fstream fs_ref(path_ref, ios::out | ios::app);
 	fstream fs_dat(path_dat, ios::out | ios::app | ios::binary);
-	double pos = 0;
+	unsigned long long int pos = 0;
 
 	for (it; it != terms->end(); ++it)
 	{
