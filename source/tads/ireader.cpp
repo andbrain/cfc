@@ -69,7 +69,7 @@ Term* Ireader::GetStruct(string term)
 		
 		inf = new Doc();
 		fs.read((char*)inf, sizeof(Doc));
-		f->inf = inf;
+		f->document = inf;
 
 		while(inf->next != NULL)
 		{
