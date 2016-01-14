@@ -103,8 +103,7 @@ vector<string> Qprocessor::SelectWords(string question)
 		else
 		{
 			if(word != "" && !IsStopWords(word))
-				terms.push_back(StrToLower(word));
-			
+				terms.push_back(StrToLower(word));			
 			word = "";			
 		}
 	}
@@ -124,41 +123,41 @@ int Qprocessor::Process()
 
 int Qprocessor::ProcessQuery(Query *query)
 {
-	std::vector<string> words = query->content;
-	for (std::vector<string>::iterator w = words.begin(); w != words.end(); ++w)
-	{
-		Term* inv_list = ir->GetStruct(*w);
-		MeasureSim(inv_list);
-		DeleteTerm(inv_list);
-	}	
-}
-
-int Qprocessor::MeasureSim(Term *term)
-{
-	Doc *cur = term->document;
-	double word_idf = term->idf;
 	unordered_map<string,double> weight;
 	unordered_map<string,double> norma;
 	vector<Score *> ranking;
 
-	CalculateParcials(word_idf, cur, &weight, &norma);
-
-	while(cur->next != NULL)
+	std::vector<string> words = query->content;
+	for (std::vector<string>::iterator w = words.begin(); w != words.end(); ++w)
 	{
-		cur = cur->next;
-		CalculateParcials(word_idf, cur, &weight, &norma);
+		Term* inv_list = ir->GetStruct(*w);
+		MeasureSim(inv_list, &weight, &norma, &ranking);
+		DeleteTerm(inv_list);
 	}
-	
+
 	CalculateSimilarity( &weight, &norma, &ranking);
 	CreateRanking(&ranking);
 	DeleteRanking(&ranking);
 }
 
+int Qprocessor::MeasureSim(Term *term, unordered_map<string,double> *weight, unordered_map<string,double> *norma, vector<Score *> *ranking)
+{
+	Doc *cur = term->document;
+	double word_idf = term->idf;
+	CalculateParcials(word_idf, cur, weight, norma);
+
+	while(cur->next != NULL)
+	{
+		cur = cur->next;
+		CalculateParcials(word_idf, cur, weight, norma);
+	}	
+}
+
 int Qprocessor::CalculateParcials(double idf, Doc *doc, unordered_map<string,double> *weight, unordered_map<string,double> *norma)
 {
 	double wDoc = idf*doc->frequence; // tf*idf of doc
-	double weight_parc = wDoc * idf; // weight parcial for sum
-	double norma_parc = wDoc*wDoc; // norma parcial
+	double weight_parc = wDoc * idf; // idf of query, assuming tf of query = 1. weight parcial for sum
+	double norma_parc = pow(wDoc,2); // norma parcial
 	
 	string id(doc->id);
 	IncreaseParcial(weight, id, weight_parc);
@@ -170,7 +169,9 @@ void Qprocessor::IncreaseParcial(unordered_map<string,double> *hash, string id, 
 	unordered_map<string,double>::iterator w = hash->find(id);
 	
 	if(w == hash->end())
+	{
 		hash->insert(pair<string,double>(id, value));
+	}
 	else
 	{
 		double aux = hash->at(id);
@@ -202,13 +203,6 @@ void Qprocessor::CalculateSimilarity(unordered_map<string,double> *weight, unord
 		n = norma->find(w->first);
 		norma_sqrt = sqrt(n->second);
 		sim = w->second / norma_sqrt;
-
-		// cout << endl;
-		// cout << n->second << endl;
-
-		// cout << w->second << endl;
-		// cout << norma_sqrt << endl;
-		// cout << sim << endl;
 		
 		score = new Score();
 		score->document = w->first;

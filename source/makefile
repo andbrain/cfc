@@ -12,8 +12,7 @@ BIN_ENGINE_SEARCH = ../engine
 TADS = tads
 TEMP = objs
 CC = g++
-DEBUG = -g
-CFLAGS = -c -std=c++11
+CFLAGS = -c -std=c++11 -g
 LFLAGS = -Wall
 
 ##
@@ -35,7 +34,7 @@ all: indexer engine
 ##
 
 indexer: parser.o hash_table.o indexer.o indexation.o
-	$(CC) $(LFLAGS) $(OBJS_INDEXER) $(DEBUG) -o $(BIN_INDEXER)
+	$(CC) $(LFLAGS) $(OBJS_INDEXER) -o $(BIN_INDEXER)
 
 document.o:
 	$(CC) $(CFLAGS) $(TADS)/document.cpp -o $(TEMP)/document.o
@@ -57,7 +56,7 @@ indexation.o: parser.o indexer.o
 ##
 
 engine: engine.o
-	$(CC) $(LFLAGS) $(OBJS_ENGINE) $(DEBUG) -o $(BIN_ENGINE_SEARCH)
+	$(CC) $(LFLAGS) $(OBJS_ENGINE) -o $(BIN_ENGINE_SEARCH)
 engine.o: engine.cpp ireader.o qparser.o document.o qprocessor.o util.o
 	$(CC) $(CFLAGS) engine.cpp -o $(TEMP)/engine.o
 ireader.o:

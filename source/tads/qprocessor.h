@@ -38,12 +38,13 @@ private:
 
 	//proccess of queries
 	int ProcessQuery(Query *query);
-	int MeasureSim(Term *term);
+	int MeasureSim(Term *term, unordered_map<string,double> *weight, unordered_map<string,double> *norma, vector<Score *> *ranking);
 	void DeleteTerm(Term *term);
-	int CalculateParcials(double idf, Doc *doc, unordered_map<string,double> *weight, unordered_map<string,double> *norma);
+	int CalculateParcials(double idf, Doc *doc, unordered_map<string,double> *weight,
+	 unordered_map<string,double> *norma);
 	void IncreaseParcial(unordered_map<string,double> *hash, string id, double value);
-	void CalculateSimilarity(unordered_map<string,double> *weight, unordered_map<string,double> *norma, 
-		vector<Score *> *ranking);
+	void CalculateSimilarity(unordered_map<string,double> *weight, 
+		unordered_map<string,double> *norma, vector<Score *> *ranking);
 	void CreateRanking(vector<Score *> *ranking);
 	void DeleteRanking(vector<Score *> *ranking);
 };

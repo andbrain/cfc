@@ -68,7 +68,6 @@ void Hash_Table::AddContent(string str, string doc_id)
 			Doc *new_doc = new Doc();
 			// new_doc->id = doc_id;
 			strcpy(new_doc->id, doc_id.c_str());
-			new_doc->frequence++;
 			new_doc->next = doc;
 			term->document = new_doc;
 			term->frequence++;
