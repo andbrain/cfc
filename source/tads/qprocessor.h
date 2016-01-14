@@ -28,8 +28,8 @@ private:
 	Ireader *ir;
 	vector<Query *> queries;
 	vector<Document *>* base;
+	vector<double> pn,mapp;
 	unordered_map<string,int> stopwords;	
-
 	//initializing processor
 	void SelectRelDocs(unordered_map<int,int> *docs, string listDocs);
 	void LoadStopWords();
@@ -47,6 +47,10 @@ private:
 		unordered_map<string,double> *norma, vector<Score *> *ranking);
 	void CreateRanking(vector<Score *> *ranking);
 	void DeleteRanking(vector<Score *> *ranking);
+	void GenerateMeasures(vector<Score *> *ranking, unordered_map<int,int> *rel_docs);
+	double PN(vector<Score *> *ranking, unordered_map<int,int> *rel_docs);
+	double MAP(vector<Score *> *ranking, unordered_map<int,int> *rel_docs);
+	void PrintResults();
 };
 
 #endif

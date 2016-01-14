@@ -113,12 +113,18 @@ vector<string> Qprocessor::SelectWords(string question)
 
 int Qprocessor::Process()
 {
+	int counter = 1;
 	//Proccess each query
-	// for (std::vector<Query *>::iterator q = queries.begin(); q != queries.end(); ++q)
-	for (std::vector<Query *>::iterator q = queries.begin(); q != queries.begin()+1; ++q)
+	for (std::vector<Query *>::iterator q = queries.begin(); q != queries.end(); ++q)
+	// for (std::vector<Query *>::iterator q = queries.begin(); q != queries.begin()+1; ++q)
 	{
+		
+		cout << "Query: " << counter++ << endl;
 		ProcessQuery(*q);
+
 	}
+
+	PrintResults();
 }
 
 int Qprocessor::ProcessQuery(Query *query)
@@ -126,17 +132,23 @@ int Qprocessor::ProcessQuery(Query *query)
 	unordered_map<string,double> weight;
 	unordered_map<string,double> norma;
 	vector<Score *> ranking;
-
+	
 	std::vector<string> words = query->content;
+	cout << words.size() << endl;
+	int counter=1;
 	for (std::vector<string>::iterator w = words.begin(); w != words.end(); ++w)
 	{
 		Term* inv_list = ir->GetStruct(*w);
+		if(inv_list == NULL)
+			continue;
+		
 		MeasureSim(inv_list, &weight, &norma, &ranking);
 		DeleteTerm(inv_list);
 	}
 
 	CalculateSimilarity( &weight, &norma, &ranking);
 	CreateRanking(&ranking);
+	GenerateMeasures(&ranking, &query->rel_docs);
 	DeleteRanking(&ranking);
 }
 
@@ -190,7 +202,7 @@ void Qprocessor::DeleteTerm(Term *term)
 	}
 
 	delete term->document;
-	delete term;	
+	delete term;
 }
 
 void Qprocessor::CalculateSimilarity(unordered_map<string,double> *weight, unordered_map<string,double> *norma, vector<Score *> *ranking)
@@ -216,10 +228,10 @@ void Qprocessor::CreateRanking(vector<Score *> *ranking)
 {
 	sort(ranking->begin(), ranking->end(), sortBysim);
 
-	for (vector<Score*>::iterator i = ranking->begin(); i != ranking->end(); ++i)
-	{
-		cout << (*i)->document << " " << (*i)->similarity << endl;
-	}
+	// for (vector<Score*>::iterator i = ranking->begin(); i != ranking->end(); ++i)
+	// {
+	// 	cout << (*i)->document << " " << (*i)->similarity << endl;
+	// }
 }
 	
 void Qprocessor::DeleteRanking(vector<Score *> *ranking)
@@ -228,4 +240,83 @@ void Qprocessor::DeleteRanking(vector<Score *> *ranking)
 	{
 		delete ranking->at(i);
 	}
+}
+
+void Qprocessor::GenerateMeasures(vector<Score *> *ranking, unordered_map<int,int> *rel_docs)
+{
+	double p10, map;
+	p10 = PN(ranking, rel_docs);
+	map = MAP(ranking, rel_docs);
+
+	pn.push_back(p10);
+	mapp.push_back(map);
+}
+
+double Qprocessor::PN(vector<Score *> *ranking, unordered_map<int,int> *rel_docs)
+{
+	int counter=0;
+	int n = 10; //p@10
+	double result;
+
+	unordered_map<int,int>::iterator rel;
+	for (vector<Score *>::iterator doc = ranking->begin(); doc != ranking->begin()+n; ++doc)
+	{
+		rel = rel_docs->find(atoi((*doc)->document.c_str()));
+
+		if(rel != rel_docs->end())
+			counter++;
+	}
+
+	result = (double)counter/n;
+
+	cout << "P@" << n << ": " << result*100 << "\%" << endl;
+
+	return result;
+}
+
+double Qprocessor::MAP(vector<Score *> *ranking, unordered_map<int,int> *rel_docs)
+{
+	double result, acum = 0;
+	int counter = 0;
+	int relevants = rel_docs->size();
+	unordered_map<int,int>::iterator rel;
+
+	for (int i = 0; i < ranking->size(); ++i)
+	{
+		rel = rel_docs->find(atoi(ranking->at(i)->document.c_str()));
+
+		if(rel != rel_docs->end())
+		{
+			counter++;
+			acum += (double)counter / (i+1); //start in 0
+		}
+	}
+
+	result = (double)acum / relevants;
+	cout << "MAP: "<< result*100 << "\%" << endl;
+
+	return result;
+}
+
+void Qprocessor::PrintResults()
+{
+	cout << endl;
+	cout << endl;
+
+	double res_pn, ac_pn = 0;
+	double res_map, ac_map = 0;
+	int tam = pn.size();
+
+	for (int i = 0; i < tam; ++i)
+	{
+		ac_pn += pn[i];
+		ac_map += mapp[i];
+	}
+
+	res_pn = ac_pn / tam;
+	res_map = ac_map / tam;
+	cout << "Consultas: " << tam << endl;
+	cout << "******Final Results******" << endl;
+	cout << "P@10" << ": " << res_pn*100 << "\%" << endl;
+	cout << "MAP: "<< res_map*100 << "\%" << endl;
 }
