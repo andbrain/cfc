@@ -18,18 +18,6 @@ void Iwriter::Initialize(string filename)
 	InitFile(path_dat);
 }
 
-void Iwriter::InitFile(string path)
-{
-	fstream fsin(path, ios::in);
-
-	if(fsin.is_open())
-		remove(path.c_str());
-
-	fsin.close();
-	fsin.open(path, ios::in | ios::out | ios::app);
-	fsin.close();	
-}
-
 void Iwriter::Generate()
 {
 	unordered_map<string, Term*>::iterator it = terms->begin();

@@ -12,6 +12,7 @@
 #include "iwriter.h"
 
 #define STOPWORDS_FILE "source/resources/stopwords.dat"
+#define NORMA "norma.ref"
 
 using namespace std;
 

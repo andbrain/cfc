@@ -4,6 +4,7 @@
 #include <iostream>
 #include <unordered_map>
 #include <cstring>
+#include <cmath>
 
 #include "util.h"
 #include "index.h"
@@ -20,11 +21,16 @@ public:
 	void SetTotalDocuments(int total);
 	void Print();
 	unordered_map<string,Term *>* GetHash_Table();
-	void ProcessIDF();
+	unordered_map<string,double>* GetNorma();
+	void Calculate_IDF_Norma();
 
 private:	
 	unordered_map<string,Term *> *hash_map;
+	unordered_map<string,double> *norma;
 	int total_documents;
+
+	void CalculateNorma(Doc* doc, double idf);
+	void ApplySqrt();
 };
 
 

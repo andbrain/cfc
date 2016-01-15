@@ -29,3 +29,15 @@ bool sortBydoc( Score *lhs, Score *rhs)
 { 
 	return lhs->document > rhs->document; 
 }
+
+void InitFile(string path)
+{
+	fstream fsin(path, ios::in);
+
+	if(fsin.is_open())
+		remove(path.c_str());
+
+	fsin.close();
+	fsin.open(path, ios::in | ios::out | ios::app);
+	fsin.close();	
+}

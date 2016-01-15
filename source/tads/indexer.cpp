@@ -60,7 +60,7 @@ void Indexer::Process()
 		}
 	}
 
-	hash->ProcessIDF();
+	hash->Calculate_IDF_Norma();
 }
 
 
@@ -95,9 +95,22 @@ void Indexer::Print()
 
 void Indexer::WriteIndexFile()
 {
+	//norma
+	InitFile(NORMA);
+	unordered_map<string,double>* norma = hash->GetNorma();
+	fstream fs_ref(NORMA, ios::out | ios::app);
+	unordered_map<string,double>::iterator it = norma->begin();	
+
+	for (it; it != norma->end(); ++it)
+	{
+		fs_ref << it->first << " " << it->second << endl;
+	}
+
+	fs_ref.close();
+
+	//index file
 	Iwriter *iw = new Iwriter("base", hash->GetHash_Table());
 	iw->Generate();
-
 	delete iw;
 }
 

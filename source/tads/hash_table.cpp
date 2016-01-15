@@ -4,6 +4,7 @@ Hash_Table::Hash_Table(int total_documents)
 {
 	cout << "Starting hash table" << endl;
 	hash_map = new unordered_map<string,Term *>();
+	norma = new unordered_map<string,double>();
 	this->total_documents = total_documents;
 }
 
@@ -28,6 +29,7 @@ Hash_Table::~Hash_Table()
 	
 		delete term;	
 	}
+	delete norma;
 	cout << "Finishing hash table" << endl;	
 }
 
@@ -129,7 +131,7 @@ unordered_map<string,Term *>* Hash_Table::GetHash_Table()
 	return hash_map;
 }
 
-void Hash_Table::ProcessIDF()
+void Hash_Table::Calculate_IDF_Norma()
 {
 	unordered_map<string,Term *>::iterator it = hash_map->begin();
 	Term *term;
@@ -138,7 +140,50 @@ void Hash_Table::ProcessIDF()
 	{
 		term = it->second;
 		term->idf = CalculateIDF(total_documents, term->frequence);
+		CalculateNorma(term->document, term->idf);
+
+		Doc* cur = term->document;
+		while(cur->next != NULL)
+		{
+			cur = cur->next;
+			CalculateNorma(cur, term->idf);
+		}
+
 	}
+
+	ApplySqrt();
+}
+
+void Hash_Table::CalculateNorma(Doc* doc, double idf)
+{
+	string id(doc->id);
+	unordered_map<string,double>::iterator it = norma->find(id);
+	double wd = pow(doc->frequence * idf, 2);
+
+	if(it == norma->end())
+	{
+		norma->insert(pair<string,double>(id,wd));
+	}
+	else
+	{
+		double aux = norma->at(id);
+		norma->insert(pair<string,double>(id, aux + wd));
+	}
+}
+
+void Hash_Table::ApplySqrt()
+{
+	unordered_map<string,double>::iterator it = norma->begin();	
+
+	for (it; it != norma->end(); ++it)
+	{
+		it->second = sqrt(it->second);
+	}
+}
+
+unordered_map<string,double>* Hash_Table::GetNorma()
+{
+	return norma;
 }
 
 

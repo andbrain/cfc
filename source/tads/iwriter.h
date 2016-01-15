@@ -5,6 +5,7 @@
 #include <unordered_map>
 #include <fstream>
 #include "index.h"
+#include "util.h"
 
 using namespace std;
 
@@ -21,7 +22,6 @@ private:
 	unordered_map<string,Term*> *terms;
 
 	void Initialize(string filename);
-	void InitFile(string path);
 };
 
 
