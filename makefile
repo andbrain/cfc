@@ -1,7 +1,7 @@
 
 install: compile
 compile:
-	cd source && make
+	mkdir base && cd source && make
 indexer:
 	cd source && make indexer
 engine:
