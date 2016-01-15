@@ -38,12 +38,12 @@ void Parser::InitializeMapTag()
 void Parser::InitializeMapSelTags()
 {
 	sel_tags["RN"] = RN;
-	sel_tags["AU"] = AU;
+	// sel_tags["AU"] = AU;
 	sel_tags["TI"] = TI;
 	sel_tags["AB"] = AB;
 	sel_tags["EX"] = EX;
-	// sel_tags["MJ"] = MJ;
-	// sel_tags["MN"] = MN;
+	sel_tags["MJ"] = MJ;
+	sel_tags["MN"] = MN;
 }
 
 bool Parser::InMapSelTags(string str_tag)

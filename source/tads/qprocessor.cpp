@@ -118,10 +118,9 @@ int Qprocessor::Process()
 	for (std::vector<Query *>::iterator q = queries.begin(); q != queries.end(); ++q)
 	// for (std::vector<Query *>::iterator q = queries.begin(); q != queries.begin()+1; ++q)
 	{
-		
+		cout << endl;
 		cout << "Query: " << counter++ << endl;
 		ProcessQuery(*q);
-
 	}
 
 	PrintResults();
@@ -134,8 +133,6 @@ int Qprocessor::ProcessQuery(Query *query)
 	vector<Score *> ranking;
 	
 	std::vector<string> words = query->content;
-	cout << words.size() << endl;
-	int counter=1;
 	for (std::vector<string>::iterator w = words.begin(); w != words.end(); ++w)
 	{
 		Term* inv_list = ir->GetStruct(*w);
@@ -268,7 +265,7 @@ double Qprocessor::PN(vector<Score *> *ranking, unordered_map<int,int> *rel_docs
 	}
 
 	result = (double)counter/n;
-
+	cout << "Relevantes encontrados ate 10: " << counter << endl;
 	cout << "P@" << n << ": " << result*100 << "\%" << endl;
 
 	return result;
@@ -293,6 +290,7 @@ double Qprocessor::MAP(vector<Score *> *ranking, unordered_map<int,int> *rel_doc
 	}
 
 	result = (double)acum / relevants;
+	cout << "Todos relevantes encontrados: " << counter << endl;
 	cout << "MAP: "<< result*100 << "\%" << endl;
 
 	return result;
