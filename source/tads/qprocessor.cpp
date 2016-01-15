@@ -7,6 +7,11 @@ Qprocessor::Qprocessor(vector<Document *>* base)
 	ir = new Ireader("base");
 	ir->Process();
 	RetrieveNorma();
+
+	InitFile(RESULT);
+	InitFile(RANKING);
+	fResult.open(RESULT, ios::out | ios::app);
+	fRanking.open(RANKING, ios::out | ios::app);
 }
 
 Qprocessor::~Qprocessor()
@@ -15,6 +20,9 @@ Qprocessor::~Qprocessor()
 	{
 		delete queries[i];
 	}
+
+	fResult.close();
+	fRanking.close();
 
 	delete ir;
 }
@@ -132,12 +140,19 @@ vector<string> Qprocessor::SelectWords(string question)
 
 int Qprocessor::Process()
 {
+	cout << "..Processing queries" << endl;
+
 	int counter = 1;
+	string inf;
 	//Proccess each query
 	for (std::vector<Query *>::iterator q = queries.begin(); q != queries.end(); ++q)
 	{
-		cout << endl;
-		cout << "Query: " << counter++ << endl;
+		inf = "Query: " + to_string(counter);
+		cout << inf << endl;
+		fResult << inf << endl;
+		fRanking << inf << endl;
+
+		counter++;
 		ProcessQuery(*q);
 	}
 
@@ -239,12 +254,13 @@ void Qprocessor::CreateRanking(vector<Score *> *ranking)
 {
 	sort(ranking->begin(), ranking->end(), sortBysim);
 
-	// int counter = 1;
+	int counter = 1;
 
-	// for (vector<Score *>::iterator i = ranking->begin(); i != ranking->end(); ++i)
-	// {
-	// 	cout << counter++ << ". " << (*i)->document << " -- " << (*i)->similarity << endl;
-	// }
+	for (vector<Score *>::iterator i = ranking->begin(); i != ranking->end(); ++i)
+	{
+		fRanking << counter++ << ". " << (*i)->document << " -- " << (*i)->similarity << endl;
+	}
+	fRanking << endl;
 }
 	
 void Qprocessor::DeleteRanking(vector<Score *> *ranking)
@@ -281,8 +297,8 @@ double Qprocessor::PN(vector<Score *> *ranking, unordered_map<int,int> *rel_docs
 	}
 
 	result = (double)counter/n;
-	cout << "Relevantes encontrados ate 10: " << counter << endl;
-	cout << "P@" << n << ": " << result*100 << "\%" << endl;
+	fResult << "Relevantes encontrados ate 10: " << counter << endl;
+	fResult << "P@" << n << ": " << result*100 << "\%" << endl;
 
 	return result;
 }
@@ -306,8 +322,9 @@ double Qprocessor::MAP(vector<Score *> *ranking, unordered_map<int,int> *rel_doc
 	}
 
 	result = (double)acum / relevants;
-	cout << "Todos relevantes encontrados: " << counter << endl;
-	cout << "MAP: "<< result*100 << "\%" << endl;
+	fResult << "Todos relevantes encontrados: " << counter << endl;
+	fResult << "MAP: "<< result*100 << "\%" << endl;
+	fResult << endl;
 
 	return result;
 }
@@ -330,8 +347,8 @@ void Qprocessor::PrintResults()
 	res_pn = ac_pn / tam;
 	res_map = ac_map / tam;
 
-	cout << "******Final Results******" << endl;
-	cout << "Total de Consultas: " << tam << endl;
-	cout << "P@10" << ": " << res_pn*100 << "\%" << endl;
-	cout << "MAP: "<< res_map*100 << "\%" << endl;
+	fResult << "******Final Results******" << endl;
+	fResult << "Total de Consultas: " << tam << endl;
+	fResult << "P@10" << ": " << res_pn*100 << "\%" << endl;
+	fResult << "MAP: "<< res_map*100 << "\%" << endl;
 }

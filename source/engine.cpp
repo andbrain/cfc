@@ -7,7 +7,6 @@ using namespace std;
 int main()
 {
 	cout << "Engine starting" << endl;
-
 	Qparser *parser = new Qparser("base/cfquery");
 	parser->Process();
 	Qprocessor *proc = new Qprocessor(parser->GetCollection()); 

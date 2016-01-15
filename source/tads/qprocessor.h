@@ -14,6 +14,8 @@
 
 #define STOPWORDS_FILE "source/resources/stopwords.dat"
 #define NORMA "norma.ref"
+#define RESULT "result.txt"
+#define RANKING "ranking.txt"
 
 using namespace std;
 
@@ -30,6 +32,7 @@ private:
 	vector<Query *> queries;
 	vector<Document *>* base;
 	vector<double> pn,mapp;
+	fstream fResult,fRanking;
 	unordered_map<string,int> stopwords;
 	unordered_map<string,double> norma;
 
