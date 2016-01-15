@@ -16,6 +16,11 @@ Indexer::~Indexer()
 void Indexer::Initialize()
 {
 	LoadStopWords();
+
+	//hash of gains
+	gains["MN"] = 0.05;
+	gains["MJ"] = 0;
+	gains["TI"] = 0;
 }
 
 void Indexer::LoadStopWords()
@@ -64,11 +69,11 @@ void Indexer::Process()
 }
 
 
-void Indexer::SplitField(string id, string field,string line)
+void Indexer::SplitField(string id, string field, string line)
 {
 	string::iterator it;
 	string word = "";
-
+	unordered_map<string,double>::iterator g;
 	for(it = line.begin(); it != line.end(); ++it)
 	{
 		//TODO:: check if is necessary to evaluate symbol '-'. Eg: bottle-neck
@@ -79,8 +84,11 @@ void Indexer::SplitField(string id, string field,string line)
 		{
 			if(word != "" && !IsStopWords(word) && word.size() > 2)
 			{
-				// word = MakeStemming(word);
-				hash->AddContent(word, id);				
+				g = gains.find(field);
+				if(g == gains.end())
+					hash->AddContent(word, id);
+				else
+					hash->AddContent(word, id, gains[field]);
 			}
 			
 			word = "";

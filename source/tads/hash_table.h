@@ -17,7 +17,7 @@ class Hash_Table
 public:
 	Hash_Table(int total_documents);
 	~Hash_Table();
-	void AddContent(string str, string doc_id);
+	void AddContent(string str, string doc_id, double gain = 0);
 	void SetTotalDocuments(int total);
 	void Print();
 	unordered_map<string,Term *>* GetHash_Table();
@@ -30,7 +30,7 @@ private:
 	unordered_map<string,int> max_freq;
 	int total_documents;
 
-	void CalculateNorma(Doc* doc, double idf);
+	void CalculateNorma(Doc* doc, double idf, double gain);
 	void ApplySqrt();
 
 };

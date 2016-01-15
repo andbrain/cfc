@@ -29,9 +29,10 @@ private:
 	vector<Document *>* base;
 	Hash_Table *hash;
 	unordered_map<string,int> stopwords;
+	unordered_map<string,double> gains;
 	void LoadStopWords();
 	bool IsStopWords(string word);
-	void SplitField(string id, string line);
+	void SplitField(string id, string field, string line);
 };
 
 #endif

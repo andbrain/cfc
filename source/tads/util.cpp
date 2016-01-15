@@ -27,9 +27,9 @@ double CalculateWeight1(double tf, double idf)
 	return result;
 }
 
-double CalculateWeight2(double tf, double idf)
+double CalculateWeight2(double tf, double idf, double gain)
 {
-	double result = idf * (1 + log(tf)/log(2));
+	double result = idf * (1 + log(tf * gain)/log(2)) ;
 
 	return result;
 }

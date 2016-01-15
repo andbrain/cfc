@@ -44,7 +44,7 @@ private:
 	int ProcessQuery(Query *query);
 	int MeasureSim(Term *term, unordered_map<string,double> *weight, vector<Score *> *ranking);
 	void DeleteTerm(Term *term);
-	int CalculateParcials(double idf, Doc *doc, unordered_map<string,double> *weight);
+	int CalculateParcials(double idf, double gain, Doc *doc, unordered_map<string,double> *weight);
 	void CalculateSimilarity(unordered_map<string,double> *weight, vector<Score *> *ranking);
 	void CreateRanking(vector<Score *> *ranking);
 	void DeleteRanking(vector<Score *> *ranking);

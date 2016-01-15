@@ -33,7 +33,7 @@ Hash_Table::~Hash_Table()
 	cout << "Finishing hash table" << endl;	
 }
 
-void Hash_Table::AddContent(string str, string doc_id)
+void Hash_Table::AddContent(string str, string doc_id, double gain)
 {
 	string word_lower = StrToLower(str);
 	unordered_map<string,Term *>::iterator it = hash_map->find(word_lower);
@@ -53,14 +53,15 @@ void Hash_Table::AddContent(string str, string doc_id)
 		// term->content = word_lower;
 		strcpy(term->content, word_lower.c_str());
 		term->document = doc;
+		term->gain += gain;
 		hash_map->insert(pair<string,Term *>(word_lower,term));
 	}
 	else
 	{
 		Term *term = it->second;		
 		doc = term->document;
+		term->gain += gain;
 
-		// if(doc->id == doc_id)
 		if(strcmp(doc->id,doc_id.c_str()) == 0)
 		{
 			//add frequence to document
@@ -107,6 +108,8 @@ void Hash_Table::Print()
 		cout << "\t";
 		cout << "IDF => " << CalculateIDF(total_documents, term->frequence) << endl;
 		cout << "\t";
+		cout << "Gains => " << term->gain << endl;
+		cout << "\t";
 		cout << "Repetitions in docs => " << term->frequence << endl;
 		
 		doc = term->document;
@@ -137,19 +140,19 @@ void Hash_Table::Calculate_IDF_Norma()
 {
 	unordered_map<string,Term *>::iterator it;
 	Term *term;
-	
+
 	it = hash_map->begin();
 	for (it; it != hash_map->end(); ++it)
 	{
 		term = it->second;
 		term->idf = CalculateIDF(total_documents, term->frequence);
-		CalculateNorma(term->document, term->idf);
+		CalculateNorma(term->document, term->idf, term->gain);
 
 		Doc* cur = term->document;
 		while(cur->next != NULL)
 		{
 			cur = cur->next;
-			CalculateNorma(cur, term->idf);
+			CalculateNorma(cur, term->idf, term->gain);
 		}
 
 	}
@@ -157,13 +160,13 @@ void Hash_Table::Calculate_IDF_Norma()
 	ApplySqrt();
 }
 
-void Hash_Table::CalculateNorma(Doc* doc, double idf)
+void Hash_Table::CalculateNorma(Doc* doc, double idf, double gain)
 {
 	string id(doc->id);
 	Trim(id);	
 
 	unordered_map<string,double>::iterator it = norma->find(id);
-	double wei = CalculateWeight2(doc->frequence, idf);
+	double wei = CalculateWeight2(doc->frequence, idf, gain);
 	double wd = pow(wei, 2);
 
 	if(it == norma->end())

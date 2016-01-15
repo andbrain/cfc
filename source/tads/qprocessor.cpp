@@ -169,18 +169,19 @@ int Qprocessor::MeasureSim(Term *term, unordered_map<string,double> *weight, vec
 {
 	Doc *cur = term->document;
 	double word_idf = term->idf;
-	CalculateParcials(word_idf, cur, weight);
+	double gain = term->gain;
+	CalculateParcials(word_idf, gain, cur, weight);
 
 	while(cur->next != NULL)
 	{
 		cur = cur->next;
-		CalculateParcials(word_idf, cur, weight);
+		CalculateParcials(word_idf, gain, cur, weight);
 	}	
 }
 
-int Qprocessor::CalculateParcials(double idf, Doc *doc, unordered_map<string,double> *weight)
+int Qprocessor::CalculateParcials(double idf, double gain,Doc *doc, unordered_map<string,double> *weight)
 {
-	double wDoc = CalculateWeight2(doc->frequence, idf); // tf*idf of doc
+	double wDoc = CalculateWeight2(doc->frequence, idf, gain); // tf*idf of doc
 	double wQuery = idf; //assuming weight of query as 1
 	
 	double weight_parc = wDoc * wQuery; 
@@ -328,6 +329,7 @@ void Qprocessor::PrintResults()
 
 	res_pn = ac_pn / tam;
 	res_map = ac_map / tam;
+
 	cout << "******Final Results******" << endl;
 	cout << "Total de Consultas: " << tam << endl;
 	cout << "P@10" << ": " << res_pn*100 << "\%" << endl;

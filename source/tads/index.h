@@ -15,6 +15,7 @@ struct Term
 	char content[30]; //terms in length max of 30 characters
 	int frequence = 1;
 	double idf;
+	double gain = 1;
 	Doc *document;
 };
 
