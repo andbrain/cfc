@@ -5,9 +5,12 @@
 #include <unordered_map>
 #include <cstring>
 #include <cmath>
+#include <fstream>
 
 #include "util.h"
 #include "index.h"
+
+#define VOCAB "vocabulary.txt"
 
 using namespace std;
 
@@ -29,6 +32,7 @@ private:
 	unordered_map<string,double> *norma;
 	unordered_map<string,int> max_freq;
 	int total_documents;
+	fstream fVocab;
 
 	void CalculateNorma(Doc* doc, double idf, double gain);
 	void ApplySqrt();

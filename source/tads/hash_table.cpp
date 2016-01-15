@@ -6,6 +6,9 @@ Hash_Table::Hash_Table(int total_documents)
 	hash_map = new unordered_map<string,Term *>();
 	norma = new unordered_map<string,double>();
 	this->total_documents = total_documents;
+
+	InitFile(VOCAB);
+	fVocab.open(VOCAB, ios::out | ios::app);
 }
 
 Hash_Table::~Hash_Table()
@@ -30,6 +33,7 @@ Hash_Table::~Hash_Table()
 		delete term;	
 	}
 	delete norma;
+	fVocab.close();
 	cout << "Finishing hash table" << endl;	
 }
 
@@ -87,12 +91,12 @@ void Hash_Table::Print()
 	Doc *doc;
 	int bucket, size_bucket;
 
-	cout << "$$$ Elements of hash table $$$" << endl;
-	cout << endl;
+	fVocab << "$$$ Elements of hash table $$$" << endl;
+	fVocab << endl;
 
 	for (it; it != hash_map->end(); ++it)
 	{
-		cout << "[" << it->first << "]:" << endl;
+		fVocab << "[" << it->first << "]:" << endl;
 		
 		// cout << "\t";
 		// bucket = hash_map->bucket(it->first);
@@ -103,29 +107,29 @@ void Hash_Table::Print()
 		// cout << "bucket size:" << size_bucket << endl;
 
 		term = it->second;
-		cout << "\t";
-		cout << "Content => " << term->content << endl;
-		cout << "\t";
-		cout << "IDF => " << CalculateIDF(total_documents, term->frequence) << endl;
-		cout << "\t";
-		cout << "Gains => " << term->gain << endl;
-		cout << "\t";
-		cout << "Repetitions in docs => " << term->frequence << endl;
+		fVocab << "\t";
+		fVocab << "Content => " << term->content << endl;
+		fVocab << "\t";
+		fVocab << "IDF => " << CalculateIDF(total_documents, term->frequence) << endl;
+		fVocab << "\t";
+		fVocab << "Gains => " << term->gain << endl;
+		fVocab << "\t";
+		fVocab << "Repetitions in docs => " << term->frequence << endl;
 		
 		doc = term->document;
 
 		do{
-			cout << "\t";
-			cout << "\t";
-			cout << "[Document]: " << endl;
-			cout << "\t";
-			cout << "\t";
-			cout << "\t";
-			cout << "id => " << doc->id << endl;
-			cout << "\t";
-			cout << "\t";
-			cout << "\t";
-			cout << "frequence => " << doc->frequence << endl;
+			fVocab << "\t";
+			fVocab << "\t";
+			fVocab << "[Document]: " << endl;
+			fVocab << "\t";
+			fVocab << "\t";
+			fVocab << "\t";
+			fVocab << "id => " << doc->id << endl;
+			fVocab << "\t";
+			fVocab << "\t";
+			fVocab << "\t";
+			fVocab << "frequence => " << doc->frequence << endl;
 			doc = doc->next;
 		}while(doc != NULL);
 	}

@@ -37,3 +37,8 @@ engine
 base/*
 base.*
 norma.*
+
+#outputs
+result.*
+ranking.*
+vocabulary.*
