@@ -141,7 +141,7 @@ vector<string> Qprocessor::SelectWords(string question)
 int Qprocessor::Process()
 {
 	cout << "..Processing queries" << endl;
-
+	struct timeval begin, end;
 	int counter = 1;
 	string inf;
 	//Proccess each query
@@ -153,7 +153,18 @@ int Qprocessor::Process()
 		fRanking << inf << endl;
 
 		counter++;
+
+		/*Measuring time elapsed*/
+ 		gettimeofday(&begin, NULL);
+
 		ProcessQuery(*q);
+
+		gettimeofday(&end, NULL);
+		int tmili = (int) (1000 * (end.tv_sec - begin.tv_sec) + (end.tv_usec - begin.tv_usec) / 1000);
+
+		// fResult << "Time Elapsed: " << tmili << " (milis)" << endl;
+		fResult << "Time Elapsed: " << (double)tmili/1000 << " (s)" << endl;
+		fResult << endl;
 	}
 
 	PrintResults();
@@ -324,7 +335,6 @@ double Qprocessor::MAP(vector<Score *> *ranking, unordered_map<int,int> *rel_doc
 	result = (double)acum / relevants;
 	fResult << "Todos relevantes encontrados: " << counter << endl;
 	fResult << "MAP: "<< result*100 << "\%" << endl;
-	fResult << endl;
 
 	return result;
 }

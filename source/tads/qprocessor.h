@@ -6,6 +6,9 @@
 #include <fstream>
 #include <cmath>
 #include <algorithm>
+#include <ctime>
+#include <sys/time.h>
+
 #include "document.h"
 #include "query.h"
 #include "util.h"
