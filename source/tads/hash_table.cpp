@@ -39,6 +39,8 @@ void Hash_Table::AddContent(string str, string doc_id)
 	unordered_map<string,Term *>::iterator it = hash_map->find(word_lower);
 	Doc *doc;
 
+	Trim(doc_id);
+
 	if (it == hash_map->end())
 	{
 		//new string term
@@ -133,9 +135,10 @@ unordered_map<string,Term *>* Hash_Table::GetHash_Table()
 
 void Hash_Table::Calculate_IDF_Norma()
 {
-	unordered_map<string,Term *>::iterator it = hash_map->begin();
+	unordered_map<string,Term *>::iterator it;
 	Term *term;
 	
+	it = hash_map->begin();
 	for (it; it != hash_map->end(); ++it)
 	{
 		term = it->second;
@@ -157,8 +160,11 @@ void Hash_Table::Calculate_IDF_Norma()
 void Hash_Table::CalculateNorma(Doc* doc, double idf)
 {
 	string id(doc->id);
+	Trim(id);	
+
 	unordered_map<string,double>::iterator it = norma->find(id);
-	double wd = pow(doc->frequence * idf, 2);
+	double wei = CalculateWeight2(doc->frequence, idf);
+	double wd = pow(wei, 2);
 
 	if(it == norma->end())
 	{
@@ -167,7 +173,7 @@ void Hash_Table::CalculateNorma(Doc* doc, double idf)
 	else
 	{
 		double aux = norma->at(id);
-		norma->insert(pair<string,double>(id, aux + wd));
+		it->second = aux + wd;
 	}
 }
 

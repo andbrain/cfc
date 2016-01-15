@@ -14,6 +14,7 @@ int main()
 	Indexer *indexer = new Indexer(collection);
 	indexer->Initialize();
 	indexer->Process();
+	// indexer->Print();
 	indexer->WriteIndexFile();
 
 	delete indexer;

@@ -20,6 +20,29 @@ double CalculateIDF(int N, int n)
 	return log(number)/log(2);
 }
 
+double CalculateWeight1(double tf, double idf)
+{
+	double result = tf * idf;
+
+	return result;
+}
+
+double CalculateWeight2(double tf, double idf)
+{
+	double result = idf * (1 + log(tf)/log(2));
+
+	return result;
+}
+
+double CalculateWeight3(double tf, double max_tf, double idf)
+{
+	double final_tf = 0.5 + 0.5*((double)tf / max_tf);
+	double result = final_tf * idf;
+	
+	return result;
+}
+
+
 bool sortBysim( Score *lhs, Score *rhs) 
 { 
 	return lhs->similarity > rhs->similarity; 

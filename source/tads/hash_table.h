@@ -27,10 +27,12 @@ public:
 private:	
 	unordered_map<string,Term *> *hash_map;
 	unordered_map<string,double> *norma;
+	unordered_map<string,int> max_freq;
 	int total_documents;
 
 	void CalculateNorma(Doc* doc, double idf);
 	void ApplySqrt();
+
 };
 
 

@@ -135,7 +135,6 @@ int Qprocessor::Process()
 	int counter = 1;
 	//Proccess each query
 	for (std::vector<Query *>::iterator q = queries.begin(); q != queries.end(); ++q)
-	// for (std::vector<Query *>::iterator q = queries.begin(); q != queries.begin()+1; ++q)
 	{
 		cout << endl;
 		cout << "Query: " << counter++ << endl;
@@ -181,12 +180,13 @@ int Qprocessor::MeasureSim(Term *term, unordered_map<string,double> *weight, vec
 
 int Qprocessor::CalculateParcials(double idf, Doc *doc, unordered_map<string,double> *weight)
 {
-	double wDoc = idf*doc->frequence; // tf*idf of doc
+	double wDoc = CalculateWeight2(doc->frequence, idf); // tf*idf of doc
 	double wQuery = idf; //assuming weight of query as 1
 	
 	double weight_parc = wDoc * wQuery; 
 		
 	string id(doc->id);
+	Trim(id);
 	unordered_map<string,double>::iterator w = weight->find(id);
 	
 	if(w == weight->end())
@@ -196,7 +196,7 @@ int Qprocessor::CalculateParcials(double idf, Doc *doc, unordered_map<string,dou
 	else
 	{
 		double aux = weight->at(id);
-		weight->insert(pair<string,double>(id, aux + weight_parc));
+		w->second = aux + weight_parc;
 	}
 }
 
@@ -227,7 +227,7 @@ void Qprocessor::CalculateSimilarity(unordered_map<string,double> *weight, vecto
 		n = norma.find(strDoc);
 		sim = w->second / n->second;
 		score = new Score();
-		score->document = w->first;
+		score->document = strDoc;
 		score->similarity = sim;
 
 		ranking->push_back(score);
