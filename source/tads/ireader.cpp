@@ -13,21 +13,6 @@ Ireader::~Ireader()
 	delete references;
 }
 
-vector<string> &split(const std::string &s, char delim, vector<string> &elems) {
-    stringstream ss(s);
-    string item;
-    while (getline(ss, item, delim)) {
-        elems.push_back(item);
-    }
-    return elems;
-}
-
-vector<string> Ireader::Split(const string &s,  char delim) {
-    vector<string> elems;
-    split(s, delim, elems);
-    return elems;
-}
-
 void Ireader::Process()
 {
 	ReadReferences();
@@ -45,6 +30,8 @@ void Ireader::ReadReferences()
 		//TODO:: see how to convert string to double
 		references->insert(pair<string,double>(v[0], atoi(v[1].c_str())));
 	}
+
+	fs.close();
 }
 
 Term* Ireader::GetStruct(string term)

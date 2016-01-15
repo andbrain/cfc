@@ -4,11 +4,11 @@
 #include <iostream>
 #include <unordered_map>
 #include <fstream>
-#include "index.h"
-
 #include <vector>
-#include <sstream>
 #include <string>
+
+#include "index.h"
+#include "util.h"
 
 using namespace std;
 
@@ -24,7 +24,6 @@ private:
 	string path_ref, path_dat;
 	unordered_map<string, double> *references;
 	void ReadReferences();
-	vector<string> Split(const string &s,  char delim);
 
 };
 

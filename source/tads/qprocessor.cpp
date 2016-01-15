@@ -6,6 +6,7 @@ Qprocessor::Qprocessor(vector<Document *>* base)
 
 	ir = new Ireader("base");
 	ir->Process();
+	RetrieveNorma();
 }
 
 Qprocessor::~Qprocessor()
@@ -16,6 +17,24 @@ Qprocessor::~Qprocessor()
 	}
 
 	delete ir;
+}
+
+void Qprocessor::RetrieveNorma()
+{
+	fstream fs(NORMA, ios::in);
+	string line;
+	vector<string> v;
+
+	while(getline(fs,line))
+	{
+		v = Split(line, ' ');
+		if(v.size() == 2)
+			norma.insert(pair<string,double>(v[0], atof(v[1].c_str())));
+		else if(v.size() == 3)
+			norma.insert(pair<string,double>(v[0], atof(v[2].c_str())));
+	}
+
+	fs.close();
 }
 
 void Qprocessor::Initialize()
@@ -224,11 +243,6 @@ void Qprocessor::CalculateSimilarity(unordered_map<string,double> *weight, unord
 void Qprocessor::CreateRanking(vector<Score *> *ranking)
 {
 	sort(ranking->begin(), ranking->end(), sortBysim);
-
-	// for (vector<Score*>::iterator i = ranking->begin(); i != ranking->end(); ++i)
-	// {
-	// 	cout << (*i)->document << " " << (*i)->similarity << endl;
-	// }
 }
 	
 void Qprocessor::DeleteRanking(vector<Score *> *ranking)

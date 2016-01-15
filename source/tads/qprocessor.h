@@ -13,6 +13,7 @@
 #include "index.h"
 
 #define STOPWORDS_FILE "source/resources/stopwords.dat"
+#define NORMA "norma.ref"
 
 using namespace std;
 
@@ -29,8 +30,11 @@ private:
 	vector<Query *> queries;
 	vector<Document *>* base;
 	vector<double> pn,mapp;
-	unordered_map<string,int> stopwords;	
+	unordered_map<string,int> stopwords;
+	unordered_map<string,double> norma;
+
 	//initializing processor
+	void RetrieveNorma();
 	void SelectRelDocs(unordered_map<int,int> *docs, string listDocs);
 	void LoadStopWords();
 	bool IsStopWords(string word);
