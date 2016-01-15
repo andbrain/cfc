@@ -8,4 +8,4 @@ engine:
 clean:
 	rm engine indexer base.dat base.ref && cd source && make clean
 init:
-	mkdir base %% cd source && mkdir objs
+	mkdir base && cd source && mkdir objs
