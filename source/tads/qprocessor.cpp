@@ -148,9 +148,7 @@ int Qprocessor::Process()
 int Qprocessor::ProcessQuery(Query *query)
 {
 	unordered_map<string,double> weight;
-	unordered_map<string,double> norma;
 	vector<Score *> ranking;
-	
 	std::vector<string> words = query->content;
 	for (std::vector<string>::iterator w = words.begin(); w != words.end(); ++w)
 	{
@@ -158,52 +156,47 @@ int Qprocessor::ProcessQuery(Query *query)
 		if(inv_list == NULL)
 			continue;
 		
-		MeasureSim(inv_list, &weight, &norma, &ranking);
+		MeasureSim(inv_list, &weight, &ranking);
 		DeleteTerm(inv_list);
 	}
 
-	CalculateSimilarity( &weight, &norma, &ranking);
+	CalculateSimilarity( &weight, &ranking);
 	CreateRanking(&ranking);
 	GenerateMeasures(&ranking, &query->rel_docs);
 	DeleteRanking(&ranking);
 }
 
-int Qprocessor::MeasureSim(Term *term, unordered_map<string,double> *weight, unordered_map<string,double> *norma, vector<Score *> *ranking)
+int Qprocessor::MeasureSim(Term *term, unordered_map<string,double> *weight, vector<Score *> *ranking)
 {
 	Doc *cur = term->document;
 	double word_idf = term->idf;
-	CalculateParcials(word_idf, cur, weight, norma);
+	CalculateParcials(word_idf, cur, weight);
 
 	while(cur->next != NULL)
 	{
 		cur = cur->next;
-		CalculateParcials(word_idf, cur, weight, norma);
+		CalculateParcials(word_idf, cur, weight);
 	}	
 }
 
-int Qprocessor::CalculateParcials(double idf, Doc *doc, unordered_map<string,double> *weight, unordered_map<string,double> *norma)
+int Qprocessor::CalculateParcials(double idf, Doc *doc, unordered_map<string,double> *weight)
 {
 	double wDoc = idf*doc->frequence; // tf*idf of doc
-	double weight_parc = wDoc * idf; // idf of query, assuming tf of query = 1. weight parcial for sum
-	double norma_parc = pow(wDoc,2); // norma parcial
+	double wQuery = idf; //assuming weight of query as 1
 	
+	double weight_parc = wDoc * wQuery; 
+		
 	string id(doc->id);
-	IncreaseParcial(weight, id, weight_parc);
-	IncreaseParcial(norma, id, norma_parc);
-}
-
-void Qprocessor::IncreaseParcial(unordered_map<string,double> *hash, string id, double value)
-{
-	unordered_map<string,double>::iterator w = hash->find(id);
+	unordered_map<string,double>::iterator w = weight->find(id);
 	
-	if(w == hash->end())
+	if(w == weight->end())
 	{
-		hash->insert(pair<string,double>(id, value));
+		weight->insert(pair<string,double>(id, weight_parc));
 	}
 	else
 	{
-		double aux = hash->at(id);
-		hash->insert(pair<string,double>(id, aux + value));
+		double aux = weight->at(id);
+		weight->insert(pair<string,double>(id, aux + weight_parc));
 	}
 }
 
@@ -221,17 +214,18 @@ void Qprocessor::DeleteTerm(Term *term)
 	delete term;
 }
 
-void Qprocessor::CalculateSimilarity(unordered_map<string,double> *weight, unordered_map<string,double> *norma, vector<Score *> *ranking)
+void Qprocessor::CalculateSimilarity(unordered_map<string,double> *weight, vector<Score *> *ranking)
 {
 	unordered_map<string,double>::iterator n,w = weight->begin();
-	double norma_sqrt, sim;
+	double sim;
+	string strDoc;
 	Score *score;
 	for (w; w != weight->end(); ++w)
 	{
-		n = norma->find(w->first);
-		norma_sqrt = sqrt(n->second);
-		sim = w->second / norma_sqrt;
-		
+		strDoc = w->first;
+		Trim(strDoc);
+		n = norma.find(strDoc);
+		sim = w->second / n->second;
 		score = new Score();
 		score->document = w->first;
 		score->similarity = sim;
@@ -243,6 +237,13 @@ void Qprocessor::CalculateSimilarity(unordered_map<string,double> *weight, unord
 void Qprocessor::CreateRanking(vector<Score *> *ranking)
 {
 	sort(ranking->begin(), ranking->end(), sortBysim);
+
+	// int counter = 1;
+
+	// for (vector<Score *>::iterator i = ranking->begin(); i != ranking->end(); ++i)
+	// {
+	// 	cout << counter++ << ". " << (*i)->document << " -- " << (*i)->similarity << endl;
+	// }
 }
 	
 void Qprocessor::DeleteRanking(vector<Score *> *ranking)
@@ -327,8 +328,8 @@ void Qprocessor::PrintResults()
 
 	res_pn = ac_pn / tam;
 	res_map = ac_map / tam;
-	cout << "Consultas: " << tam << endl;
 	cout << "******Final Results******" << endl;
+	cout << "Total de Consultas: " << tam << endl;
 	cout << "P@10" << ": " << res_pn*100 << "\%" << endl;
 	cout << "MAP: "<< res_map*100 << "\%" << endl;
 }

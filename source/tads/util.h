@@ -5,6 +5,12 @@
 #include <cmath>
 #include <fstream>
 #include <sstream>
+
+#include <algorithm> 
+#include <functional> 
+#include <cctype>
+#include <locale>
+
 #include "query.h"
 
 using namespace std;
@@ -15,5 +21,6 @@ bool sortBysim( Score *lhs, Score *rhs);
 bool sortBydoc( Score *lhs, Score *rhs);
 void InitFile(string path);
 vector<string> Split(const string &s,  char delim);
+string Trim(string &s);
 
 #endif
