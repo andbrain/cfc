@@ -56,7 +56,7 @@ void Indexer::Process()
 
 		for(attr; attr != (*it)->End(); ++attr)
 		{
-			SplitField(doc_id, attr->second);
+			SplitField(doc_id, attr->first, attr->second);
 		}
 	}
 
@@ -64,7 +64,7 @@ void Indexer::Process()
 }
 
 
-void Indexer::SplitField(string id, string line)
+void Indexer::SplitField(string id, string field,string line)
 {
 	string::iterator it;
 	string word = "";
@@ -77,7 +77,7 @@ void Indexer::SplitField(string id, string line)
 			word += *it;
 		else
 		{
-			if(word != "" && !IsStopWords(word))
+			if(word != "" && !IsStopWords(word) && word.size() > 2)
 			{
 				// word = MakeStemming(word);
 				hash->AddContent(word, id);				
